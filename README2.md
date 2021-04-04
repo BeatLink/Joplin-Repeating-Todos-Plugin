@@ -1,6 +1,5 @@
-# jolpin-recurrence-plugin
-A comprehensive recurrence plugin for jolpin todos
-
+# joplin-plugin-repeating-todos
+A powerful and comprehensive plugin for todo repetition/recurrence
 
 Initial design
 * User clicks button to open dialog
