@@ -125,6 +125,10 @@ const baseConfig = {
 				use: 'ts-loader',
 				exclude: /node_modules/,
 			},
+			{
+				test: /\.html$/i,
+				use: 'raw-loader',
+			}
 		],
 	},
 };
