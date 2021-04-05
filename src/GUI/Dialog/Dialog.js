@@ -3,7 +3,24 @@ let IntervalSection = document.getElementById('IntervalSection');
 let IntervalDropdown = document.getElementById('IntervalDropdown');
 let WeekdaysSection = document.getElementById('WeekdaysSection');
 let DayOfMonthSection = document.getElementById('DayOfMonthSection');
-let RepeatStopSection = document.getElementById('RepeatStopSection');
+let StopSection = document.getElementById('StopSection');
+let StopDropdown = document.getElementById('StopDropdown');
+let StopNumber = document.getElementById('StopNumber');
+let StopDate = document.getElementById('StopDate');
+
+function onStopChanged(){
+    if (EnabledCheckbox.checked && StopDropdown.value == 'date') {
+        StopDate.style.display='block';
+    } else {
+        StopDate.style.display='none'
+    }
+
+    if (EnabledCheckbox.checked && StopDropdown.value == 'number') {
+        StopNumber.style.display='block';
+    } else {
+        StopNumber.style.display='none'
+    }
+}
 
 function onIntervalChanged(){
     console.log(" Interval Changed" + IntervalDropdown.value);
@@ -26,14 +43,16 @@ function onEnabledChanged(){
     console.log(" Enabled Changed: " + EnabledCheckbox.checked);
     if (EnabledCheckbox.checked) {
         IntervalSection.style.display='block';
-        RepeatStopSection.style.display='block'
+        StopSection.style.display='block';
     } else {
         IntervalSection.style.display='none';
-        RepeatStopSection.style.display='none';
+        StopSection.style.display='none';
     }
     onIntervalChanged();
+    onStopChanged();
 }
 
 
 EnabledCheckbox.addEventListener("change", onEnabledChanged); 
 IntervalDropdown.addEventListener("change", onIntervalChanged);
+StopDropdown.addEventListener("change", onStopChanged);

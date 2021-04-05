@@ -1,4 +1,4 @@
-#IntervalSection, #WeekdaysSection, #DayOfMonthSection, #RepeatStopSection{
+#IntervalSection, #WeekdaysSection, #DayOfMonthSection, #StopSection, #StopNumber, #StopDate{
     display: none;
 }
 

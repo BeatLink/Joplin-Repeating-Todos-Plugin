@@ -12,7 +12,7 @@
         </br>
         <fieldset>
             <legend>Interval</legend>
-            <input type="number" id="repeatPeriod" name="repeatPeriod" min="1" max="999" step="1" value="1">
+            <input type="number" id="IntervalNumber" name="IntervalNumber" min="1" max="999" step="1" value="1">
             <select id=IntervalDropdown name="Interval">
                 <option value="minute" selected>Minute</option>
                 <option value="hour">Hour</option>
@@ -84,17 +84,17 @@
         </fieldset>
     </section>
 
-    <section id=RepeatStopSection>
+    <section id=StopSection>
         </br>
         <fieldset>
             <legend>Repeating Stops</legend>
-            <select name="repeatStop">
+            <select id=StopDropdown name="StopDropdown">
                 <option value="never">Never</option>
                 <option value="number">After # of Repeats</option>
                 <option value="date">After a date</option>
             </select>
-            <input type="number" id="repeatStopCount" name="repeatStopCount" min="1" max="999" step="1" value="1">
-            <input type="date" id="repeatStopDate" name="repeatStopDate"> 
+            <input id="StopNumber" type="number" name="StopNumber" min="1" max="999" step="1" value="1">
+            <input id="StopDate" type="date"  name="StopDate"> 
         </fieldset>
     </section>
 </form>
