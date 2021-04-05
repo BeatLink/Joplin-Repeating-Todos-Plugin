@@ -1,3 +1,5 @@
-#hideByDefault {
+#recurrenceIntervalSection, #recurrenceWeekdaysSection{
     display: none;
 }
+
+

@@ -11,59 +11,61 @@ const recurrenceDialogHTML=`
         <label for="recurrenceEnabled">This Task Repeats</label></td>
         </section>
     </fieldset>
-    </br class=hideByDefault id=recurrenceIntervalBr>
-    <fieldset id=recurrenceIntervalFieldset class=hideByDefault>
-        <legend>Interval</legend>
-        <section>
-        <input type="number" id="repeatPeriod" name="repeatPeriod" min="1" max="999" step="1" value="1">
-        <select name="repeatInterval">
-            <option value="minute" selected>Minute</option>
-            <option value="hour">Hour</option>
-            <option value="day">Day</option>
-            <option value="week">Week</option>
-            <option value="month">Month</option>
-            <option value="year">Year</option>
-            </select>
-            </section>
-    </fieldset>
-    </br class=hideByDefault>
-    <fieldset id=recurrenceWeekdays class=hideByDefault>
-        <legend>Weekdays</legend>
-        <section>
-        <table>
-        <tr>
-            <td><input type="checkbox" id="sunday" name="weekdaySunday" value="true"></td>
-            <td><label for="sunday">Sunday</label></td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" id="monday" name="weekdayMonday" value="true"></td>
-            <td><label for="monday">Monday</label></td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" id="tuesday" name="weekdayTuesday" value="true"></td>
-            <td><label for="tuesday">Tuesday</label></td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" id="wednesday" name="weekdayWednesday" value="true"></td>
-            <td><label for="wednesday">Wednesday</label></td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" id="thursday" name="weekdayThursday" value="true"></td>
-            <td><label for="thursday">Thursday</label></td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" id="friday" name="weekdayFriday" value="true"></td>
-            <td><label for="friday">Friday</label></td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" id="saturday" name="weekdaySaturday" value="true"></td>
-            <td><label for="saturday">Saturday</label></td>
-        </tr>
-        </table>	
-        </section>
-    </fieldset>
-    </br class=hideByDefault>
-    <fieldset id=recurrenceDayofMonth class=hideByDefault>
+
+    <section id=recurrenceIntervalSection>
+        </br>
+        <fieldset>
+            <legend>Interval</legend>
+            <input type="number" id="repeatPeriod" name="repeatPeriod" min="1" max="999" step="1" value="1">
+            <select id=recurrenceIntervalDropdown name="recurrenceInterval">
+                <option value="minute" selected>Minute</option>
+                <option value="hour">Hour</option>
+                <option value="day">Day</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+                <option value="year">Year</option>
+                </select>
+        </fieldset>
+    </section>
+
+    <section id=recurrenceWeekdaysSection>
+        </br>
+        <fieldset>
+            <legend>Weekdays</legend>
+            <table>
+            <tr>
+                <td><input type="checkbox" id="sunday" name="weekdaySunday" value="true"></td>
+                <td><label for="sunday">Sunday</label></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="monday" name="weekdayMonday" value="true"></td>
+                <td><label for="monday">Monday</label></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="tuesday" name="weekdayTuesday" value="true"></td>
+                <td><label for="tuesday">Tuesday</label></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="wednesday" name="weekdayWednesday" value="true"></td>
+                <td><label for="wednesday">Wednesday</label></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="thursday" name="weekdayThursday" value="true"></td>
+                <td><label for="thursday">Thursday</label></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="friday" name="weekdayFriday" value="true"></td>
+                <td><label for="friday">Friday</label></td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" id="saturday" name="weekdaySaturday" value="true"></td>
+                <td><label for="saturday">Saturday</label></td>
+            </tr>
+            </table>	
+        </fieldset>
+    </section>
+    </br id=recurrenceDayOfMonthBr>
+    <fieldset id=recurrenceDayOfMonth>
         <legend>Day of Month</legend>
         <section>
         <select name="dayOfMonthOrdinal">
@@ -118,8 +120,8 @@ joplin.plugins.register({
 			label: 'Open Recurrence Dialog',
 			iconName: 'fas fa-redo-alt',
 			execute: async () => {
-				const result3 = await joplin.views.dialogs.open(recurrenceDialog);
-				console.info('Got result: ' + JSON.stringify(result3));				
+				const result = await joplin.views.dialogs.open(recurrenceDialog);
+				console.info('Got result: ' + JSON.stringify(result));				
 			},
 		});
 		await joplin.views.toolbarButtons.create('myButton1', 'editRecurrence', ToolbarButtonLocation.NoteToolbar);
