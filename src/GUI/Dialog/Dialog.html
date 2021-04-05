@@ -60,39 +60,41 @@
             </table>	
         </fieldset>
     </section>
-    </br id=DayOfMonthBr>
-    <fieldset id=DayOfMonth>
-        <legend>Day of Month</legend>
-        <section>
-        <select name="dayOfMonthOrdinal">
-            <option value="first">First</option>
-            <option value="second">Second</option>
-            <option value="third">Third</option>
-            <option value="fourth">Fourth</option>
-            <option value="last">Last</option>
-        </select>
-        <select name="dayOfMonthWeekday">
-            <option value="sunday">Sunday</option>
-            <option value="monday">Monday</option>
-            <option value="tuesday">Tuesday</option>
-            <option value="wednesday">Wednesday</option>
-            <option value="thursday">Thursday</option>
-            <option value="thursday">Friday</option>
-            <option value="thursday">Saturday</option>
-        </select>
-        </section>
-    </fieldset>
-    </br class=hideByDefault>
-    <fieldset class=hideByDefault>
-        <legend>Repeating Stops</legend>
-        <section>
-        <select name="repeatStop">
-            <option value="never">Never</option>
-            <option value="number">After # of Repeats</option>
-            <option value="date">After a date</option>
-        </select>
-        <input type="number" id="repeatStopCount" name="repeatStopCount" min="1" max="999" step="1" value="1">
-        <input type="date" id="repeatStopDate" name="repeatStopDate"> 
-        </section>
-    </fieldset>
+
+    <section id=DayOfMonthSection>
+        </br id=DayOfMonthBr>
+        <fieldset id=DayOfMonth>
+            <legend>Day of Month</legend>
+            <select name="dayOfMonthOrdinal">
+                <option value="first">First</option>
+                <option value="second">Second</option>
+                <option value="third">Third</option>
+                <option value="fourth">Fourth</option>
+                <option value="last">Last</option>
+            </select>
+            <select name="dayOfMonthWeekday">
+                <option value="sunday">Sunday</option>
+                <option value="monday">Monday</option>
+                <option value="tuesday">Tuesday</option>
+                <option value="wednesday">Wednesday</option>
+                <option value="thursday">Thursday</option>
+                <option value="thursday">Friday</option>
+                <option value="thursday">Saturday</option>
+            </select>
+        </fieldset>
+    </section>
+
+    <section id=RepeatStopSection>
+        </br>
+        <fieldset>
+            <legend>Repeating Stops</legend>
+            <select name="repeatStop">
+                <option value="never">Never</option>
+                <option value="number">After # of Repeats</option>
+                <option value="date">After a date</option>
+            </select>
+            <input type="number" id="repeatStopCount" name="repeatStopCount" min="1" max="999" step="1" value="1">
+            <input type="date" id="repeatStopDate" name="repeatStopDate"> 
+        </fieldset>
+    </section>
 </form>
