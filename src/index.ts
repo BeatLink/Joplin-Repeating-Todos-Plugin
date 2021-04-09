@@ -1,5 +1,7 @@
 import joplin from 'api';
 import { setupGUI }  from './GUI/setupUI';
+import { setupDatabase } from './Database/database';
+
 
 
 async function mainPlugin(){
