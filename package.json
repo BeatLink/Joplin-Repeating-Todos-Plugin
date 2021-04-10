@@ -11,7 +11,7 @@
     "joplin-plugin"
   ],
   "devDependencies": {
-    "@types/node": "^14.0.14",
+    "@types/node": "^14.14.37",
     "chalk": "^4.1.0",
     "copy-webpack-plugin": "^6.1.0",
     "fs-extra": "^9.0.1",
@@ -28,7 +28,9 @@
   "dependencies": {
     "browserify": "^17.0.0",
     "date-fns": "^2.20.0",
-    "sqlite": "^4.0.21",
-    "stream-browserify": "*"
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.0.2",
+    "stream-browserify": "*",
+    "typeorm": "^0.2.32"
   }
 }
