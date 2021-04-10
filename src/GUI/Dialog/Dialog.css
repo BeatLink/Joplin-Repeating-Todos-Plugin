@@ -1,4 +1,4 @@
-#IntervalSection, #WeekdaysSection, #DayOfMonthSection, #StopSection, #StopNumber, #StopDate{
+#IntervalSection, #WeekdaysSection, #DayOfMonthSection, #StopSection, #StopNumber, #StopDate, #DayOfMonthOrdinalDropdown{
     display: none;
 }
 

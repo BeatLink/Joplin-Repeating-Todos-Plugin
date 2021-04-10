@@ -19,15 +19,9 @@ async function getResults(result:DialogResult){
     
     var recurrence = new Recurrence();
     
-    recurrence.enabled = ('Enabled' in recurrenceData ? true : false);
-    console.debug(recurrence.enabled);
-
+    recurrence.enabled = ('Enabled' in recurrenceData ? true : false);    
     recurrence.intervalNumber = recurrenceData.IntervalNumber;
-    console.debug(recurrence.intervalNumber);
-
     recurrence.interval = recurrenceData.Interval;
-    console.debug(recurrence.interval);
-
     recurrence.weekdays.sunday = ('weekdaySunday' in recurrenceData ? true : false);
     recurrence.weekdays.monday = ('weekdayMonday' in recurrenceData ? true : false);
     recurrence.weekdays.tuesday = ('weekdayTuesday' in recurrenceData ? true : false);
@@ -35,9 +29,13 @@ async function getResults(result:DialogResult){
     recurrence.weekdays.thursday = ('weekdayThursday' in recurrenceData ? true : false);
     recurrence.weekdays.friday = ('weekdayFriday' in recurrenceData ? true : false);
     recurrence.weekdays.saturday = ('weekdaySaturday' in recurrenceData ? true : false);
-
-
+    recurrence.weekdayOfMonth.ordinal = recurrenceData.dayOfMonthOrdinal;
+    recurrence.weekdayOfMonth.weekday = recurrenceData.dayOfMonthWeekday;
+    
+    console.debug(recurrence.interval);
     console.debug(recurrence.weekdays)
+    console.debug(recurrence.enabled);
+    console.debug(recurrence.intervalNumber);
 
 
 

@@ -3,6 +3,8 @@ let IntervalSection = document.getElementById('IntervalSection');
 let IntervalDropdown = document.getElementById('IntervalDropdown');
 let WeekdaysSection = document.getElementById('WeekdaysSection');
 let DayOfMonthSection = document.getElementById('DayOfMonthSection');
+let DayOfMonthOrdinalDropdown = document.getElementById('DayOfMonthOrdinalDropdown');
+let DayOfMonthWeekdayDropdown = document.getElementById('DayOfMonthWeekdayDropdown');
 let StopSection = document.getElementById('StopSection');
 let StopDropdown = document.getElementById('StopDropdown');
 let StopNumber = document.getElementById('StopNumber');
@@ -22,6 +24,14 @@ function onStopChanged(){
     }
 }
 
+function onDayOfMonthChanged(){
+    if (EnabledCheckbox.checked && IntervalDropdown.value == "month" && DayOfMonthWeekdayDropdown.value !== 'none') {
+        DayOfMonthOrdinalDropdown.style.display = 'inline';
+    } else {
+        DayOfMonthOrdinalDropdown.style.display = 'none';
+    }
+}
+
 function onIntervalChanged(){
     console.log(" Interval Changed" + IntervalDropdown.value);
 
@@ -36,7 +46,7 @@ function onIntervalChanged(){
     } else {
         DayOfMonthSection.style.display='none';
     }
-
+    onDayOfMonthChanged();
 }
 
 function onEnabledChanged(){
@@ -56,3 +66,4 @@ function onEnabledChanged(){
 EnabledCheckbox.addEventListener("change", onEnabledChanged); 
 IntervalDropdown.addEventListener("change", onIntervalChanged);
 StopDropdown.addEventListener("change", onStopChanged);
+DayOfMonthWeekdayDropdown.addEventListener('change', onDayOfMonthChanged);
