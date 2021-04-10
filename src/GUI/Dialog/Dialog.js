@@ -25,7 +25,7 @@ function onStopChanged(){
 }
 
 function onDayOfMonthChanged(){
-    if (EnabledCheckbox.checked && IntervalDropdown.value == "month" && DayOfMonthWeekdayDropdown.value !== 'none') {
+    if (EnabledCheckbox.checked && IntervalDropdown.value == "month" && DayOfMonthWeekdayDropdown.value) {
         DayOfMonthOrdinalDropdown.style.display = 'inline';
     } else {
         DayOfMonthOrdinalDropdown.style.display = 'none';
