@@ -8,17 +8,37 @@ import { Recurrence } from './recurrence';
 
 // GUI ############################################################################################
 async function getResults(result:DialogResult){
-    console.info('Got result: ' + JSON.stringify(result));
-    
-    var recurrenceData = result.formData.recurrence
-    var recurrence = new Recurrence();
-    recurrence.enabled = recurrenceData.Enabled;
-    recurrence.intervalNumber = recurrenceData.intervalNumber;
-    recurrence.interval = recurrenceData.Interval;
+    if (result.id == 'cancel') {
+        console.info('Dialog cancelled');
+        return;
+    }
 
-    if ('weekdayMonday' in recurrenceData){
-        null;
-    } 
+
+    var recurrenceData = result.formData.recurrence;
+    console.info('Got result: ' + JSON.stringify(recurrenceData));
+    
+    var recurrence = new Recurrence();
+    
+    recurrence.enabled = ('Enabled' in recurrenceData ? true : false);
+    console.debug(recurrence.enabled);
+
+    recurrence.intervalNumber = recurrenceData.IntervalNumber;
+    console.debug(recurrence.intervalNumber);
+
+    recurrence.interval = recurrenceData.Interval;
+    console.debug(recurrence.interval);
+
+    recurrence.weekdays.sunday = ('weekdaySunday' in recurrenceData ? true : false);
+    recurrence.weekdays.monday = ('weekdayMonday' in recurrenceData ? true : false);
+    recurrence.weekdays.tuesday = ('weekdayTuesday' in recurrenceData ? true : false);
+    recurrence.weekdays.wednesday = ('weekdayWednesday' in recurrenceData ? true : false);
+    recurrence.weekdays.thursday = ('weekdayThursday' in recurrenceData ? true : false);
+    recurrence.weekdays.friday = ('weekdayFriday' in recurrenceData ? true : false);
+    recurrence.weekdays.saturday = ('weekdaySaturday' in recurrenceData ? true : false);
+
+
+    console.debug(recurrence.weekdays)
+
 
 
     console.log(recurrence.enabled)

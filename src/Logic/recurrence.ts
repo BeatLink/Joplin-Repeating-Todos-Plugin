@@ -14,17 +14,29 @@ export class WeekDays {
     weekly recurrences 
     ------------------------------------------------------------------------------------------------ */
 
-    map = new Map([
-        ["Sunday", false],
-        ["Monday", false],
-        ["Tuesday", false],
-        ["Wednesday", false],
-        ["Thursday", false],
-        ["Friday", false],
-        ["Saturday", false]
-    ]); 
+    sunday = false;
+    monday = false;
+    tuesday = false;
+    wednesday = false;
+    thursday = false;
+    friday = false;
+    saturday = false;
 
-    private array = Array.from(this.map.keys());
+    private getMap(){
+        return new Map([
+            ["Sunday", this.sunday],
+            ["Monday", this.monday],
+            ["Tuesday", this.tuesday],
+            ["Wednesday", this.wednesday],
+            ["Thursday", this.thursday],
+            ["Friday", this.friday],
+            ["Saturday", this.saturday]
+        ])
+    }
+
+    private getArray(){
+        return Array.from(this.getMap().values());
+    }
 
     /*
     private getIntegerArray(){
@@ -43,7 +55,7 @@ export class WeekDays {
         Eg. ['Sunday', 'Monday', 'Tuesday']
         -------------------------------------------------------------------------------------------- */
         let weekdays = [];
-        for (let [day, enabled] of this.map) {
+        for (let [day, enabled] of this.getMap()) {
             if (enabled) {
                 weekdays.push(day)
             }
