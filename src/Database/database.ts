@@ -1,4 +1,20 @@
+import joplin from "api";
+import "reflect-metadata";
+import { createConnection } from "typeorm";
+import { Recurrence } from "./entities";
 
+
+createConnection({
+    type: "sqlite",
+    database: `${joplin.plugins.dataDir()}/sqlite3`,
+    entities: [
+        Recurrence
+    ],
+    synchronize: true,
+    logging: false
+}).then(connection => {
+    // here you can start to work with your entities
+}).catch(error => console.log(error));
 
 /*
 dbSchema = `CREATE TABLE IF NOT EXISTS RecurrenceData (
