@@ -1,5 +1,4 @@
 import joplin from 'api';
-import JoplinViewsDialogs from 'api/JoplinViewsDialogs';
 import {ToolbarButtonLocation } from 'api/types';
 
 
