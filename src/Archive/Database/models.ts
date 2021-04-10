@@ -1,3 +1,12 @@
+/* ########################################################## READ ME ####################################################################
+
+    The recurrence logic contained in this file started out as a part of an old python todo app project of mine, this most of this code
+    is in the python syntax and would need to be ported to typescript equivalents before it will be functional. Do not use any file with
+    this notice.
+
+*/
+
+
 /*
 class Recurrence(playhouse.signals.Model):
 class Meta:
@@ -5,7 +14,7 @@ class Meta:
 task_id = peewee.ForeignKeyField(Task, backref="recurrence")
 enabled = peewee.BooleanField(default=False)
 interval = peewee.CharField(default='minute')
-increment = peewee.IntegerField(default=1)
+intervalNumber = peewee.IntegerField(default=1)
 
 
 class Weekdays(playhouse.signals.Model):
