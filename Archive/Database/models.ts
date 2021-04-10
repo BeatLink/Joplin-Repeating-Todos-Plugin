@@ -1,4 +1,4 @@
-
+/*
 class Recurrence(playhouse.signals.Model):
 class Meta:
     table_name = 'recurrence'
@@ -34,3 +34,4 @@ recurrence_id = peewee.ForeignKeyField(Recurrence, backref="recurrence_stop_data
 type = peewee.CharField(default='never')
 date = peewee.DateTimeField(default=None, null=True)
 number = peewee.IntegerField(default=0)
+*/

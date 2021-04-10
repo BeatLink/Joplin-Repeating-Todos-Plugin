@@ -1,6 +1,6 @@
 
 
-
+/*
 dbSchema = `CREATE TABLE IF NOT EXISTS RecurrenceData (
     taskid text NOT NULL PRIMARY KEY,
 
@@ -55,3 +55,4 @@ function setupDatabase(){
 
 
 }
+*/

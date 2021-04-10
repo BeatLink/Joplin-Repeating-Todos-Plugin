@@ -21,14 +21,16 @@ class WeekDays {
         this.map = map
     }
 
+    /*
     private getIntegerArray(){
         /*
         Returns a set of integers ranging from 0-6 representing the enabled days. 0=Mon, 1=Tue...5=Sat, 6=Sun
-        */
-
+        
     return set([weekday_index for weekday_index, enabled in enumerate(self.dict.values()) if enabled])
 
     }
+    */
+
 
     public getStringArray(){
         /* --------------------------------------------------------------------------------------------
@@ -52,7 +54,7 @@ class WeekDays {
             let last_day = weekdays.pop();
             let initial_days = weekdays.join(", ");
             weekdaysString = `${initial_days} and ${last_day}`;
-        } else if (Weekdays.length == 1) {
+        } else if (weekdays.length == 1) {
             weekdaysString = weekdays[0];
         } else {
             weekdaysString = '';
@@ -70,7 +72,7 @@ class WeekDays {
         - Sorting the possible weekdays in both the initial week and the incremented week
         - returning the first weekday that comes after the initial date
 
-    ---------------------------------------------------------------------------------------------*/
+    ---------------------------------------------------------------------------------------------
     public getNextDate(initial_date:Date, increment:number){
         
         let valid_weekdays = []
@@ -99,6 +101,7 @@ class WeekDays {
                 return weekday.replace(hour=initial_date.hour, minute=initial_date.minute, second=initial_date.second)
 
     }
+    */
 
 
 
