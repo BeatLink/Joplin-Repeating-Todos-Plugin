@@ -181,7 +181,7 @@ class StopInfo {
 
     type = 'never'  //String indicating the stop criteria. Valid Values are 'date', 'number' and 'never'
     date = null     //Date object representing the date the task should stop repeating.
-    number = 0      //Integer representing the number of times before task stops repeating.
+    number = 1      //Integer representing the number of times before task stops repeating.
  
 
    /*
