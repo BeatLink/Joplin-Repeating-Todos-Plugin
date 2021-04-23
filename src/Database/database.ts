@@ -1,18 +1,54 @@
 import joplin from "api";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
-import { Recurrence } from "./entities";
 
-/*
-async function demoFsExtra() {
-	const fs = joplin.plugins.require('fs-extra');
+const plugins = joplin.plugins as any
+const fs = plugins.require('fs-extra')
+const sqlite3 = plugins.require('sqlite3')
 
-	const pluginDir = await joplin.plugins.dataDir();
-	console.info('Checking if "' + pluginDir + '" exists:', await fs.pathExists(pluginDir));
+
+async function setupPluginFolder(directory: string){
+    try {
+        await fs.ensureDir(directory)
+        console.log('success!')
+    } catch (err) {
+        console.error(err)
+    }
 }
 
-const pluginDir = joplin.plugins.dataDir();
+export async function setupDatabase(){
+    const pluginDir = await plugins.dataDir();
+    const databasePath = pluginDir + "/database.sqlite3";
+    await setupPluginFolder(pluginDir)
+    console.log(databasePath)
+    var database = new sqlite3.Database(databasePath);
+}
 
+
+
+
+
+
+
+/*db.serialize(function() {
+  db.run("CREATE TABLE lorem (info TEXT)");
+  var stmt = db.prepare("INSERT INTO lorem VALUES (?)");
+  for (var i = 0; i < 10; i++) {
+      stmt.run("Ipsum " + i);
+  }
+  stmt.finalize();
+
+  db.each("SELECT rowid AS id, info FROM lorem", function(err, row) {
+      console.log(row.id + ": " + row.info);
+  });
+});
+
+db.close();
+
+
+
+
+/*
 createConnection({
     type: "sqlite",
     database: `${pluginDir}/RecurrenceData.sqlite3`,
@@ -74,12 +110,5 @@ function setupDatabase(){
         }
         console.log('Connected to ' + DB_PATH + ' database.')
     });
-
-
-
-
-
-
-
 }
 */

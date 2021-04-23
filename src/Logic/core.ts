@@ -1,7 +1,7 @@
 import joplin from 'api';
 import { createDialog, openDialog } from '../GUI/Dialog/Dialog';
 import { setupToolbar } from '../GUI/Toolbar/Toolbar';
-//import { setupDatabase } from '../Archive/Database/database';
+import { setupDatabase } from '../Database/database';
 
 var dialog = null;
 
@@ -24,6 +24,8 @@ export async function main() {
 
     //Log startup to console
     await console.info('Repeating To-Dos Plugin started!');
+
+    await setupDatabase();
 
     //Setup UI
     await setupGUI();

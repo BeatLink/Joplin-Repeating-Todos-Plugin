@@ -1,76 +1,21 @@
-import { Entity, Column, PrimaryColumn} from "typeorm";
+import joplin from "api";
+const plugins = joplin.plugins as any
+const sqlite3 = plugins.require('sqlite3')
 
-@Entity()
-export class Recurrence {
 
-    @PrimaryColumn()
-    taskId: string;
+async function createTables(database){
+    "CREATE TABLE Weekdays (weekdayID TEXT PRIMARY KEY, sunday INTEGER, monday INTEGER, tuesday INTEGER, wednesday INTEGER, thursday INTEGER, friday INTEGER, saturday INTEGER)"
 
-    @Column()
-    enabled: boolean;
+    "CREATE TABLE WeekdayOfMonth (taskID TEXT PRIMARY KEY, ordinal TEXT, weekday TEXT)"
 
-    @Column()
-    interval: string;
+    "CREATE TABLE StopData (taskID TEXT PRIMARY KEY, type TEXT, date TEXT, number INTEGER)"
 
-    @Column()
-    intervalNumber: number;
+
+    database.run("CREATE TABLE Recurrence (taskID TEXT PRIMARY KEY, enabled INTEGER, interval TEXT, intervalNumber INTEGER, FOREIGN KEY (weekdays) REFERENCES Weekdays(weekdayID))")
 }
 
 
-@Entity()
-export class Weekdays {
-
-    @PrimaryColumn()
-    taskId: string;
-
-    @Column()
-    sunday: boolean
-
-    @Column()
-    monday: boolean
-
-    @Column()
-    tuesday: boolean
-
-    @Column()
-    wednesday: boolean
-
-    @Column()
-    thursday: boolean
-
-    @Column()
-    friday: boolean
-
-    @Column()
-    saturday: boolean
-
-}
 
 
-@Entity()
-export class WeekdayOfMonth {
-    @PrimaryColumn()
-    taskId: string;
-
-    @Column()
-    ordinal: string;
-
-    @Column()
-    weekday: string;
-}
 
 
-@Entity ()
-export class StopData {
-    @PrimaryColumn()
-    taskId: string;
-
-    @Column()
-    type: string;
-
-    @Column()
-    date: Date;
-
-    @Column()
-    number:number;
-}
