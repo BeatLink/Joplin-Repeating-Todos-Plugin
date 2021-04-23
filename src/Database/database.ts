@@ -3,10 +3,19 @@ import "reflect-metadata";
 import { createConnection } from "typeorm";
 import { Recurrence } from "./entities";
 
+/*
+async function demoFsExtra() {
+	const fs = joplin.plugins.require('fs-extra');
+
+	const pluginDir = await joplin.plugins.dataDir();
+	console.info('Checking if "' + pluginDir + '" exists:', await fs.pathExists(pluginDir));
+}
+
+const pluginDir = joplin.plugins.dataDir();
 
 createConnection({
     type: "sqlite",
-    database: `${joplin.plugins.dataDir()}/sqlite3`,
+    database: `${pluginDir}/RecurrenceData.sqlite3`,
     entities: [
         Recurrence
     ],
@@ -15,6 +24,8 @@ createConnection({
 }).then(connection => {
     // here you can start to work with your entities
 }).catch(error => console.log(error));
+*/
+
 
 /*
 dbSchema = `CREATE TABLE IF NOT EXISTS RecurrenceData (

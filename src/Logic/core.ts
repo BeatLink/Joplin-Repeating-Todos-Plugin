@@ -1,3 +1,4 @@
+import joplin from 'api';
 import { createDialog, openDialog } from '../GUI/Dialog/Dialog';
 import { setupToolbar } from '../GUI/Toolbar/Toolbar';
 //import { setupDatabase } from '../Archive/Database/database';
@@ -26,6 +27,7 @@ export async function main() {
 
     //Setup UI
     await setupGUI();
+
 }
 
 

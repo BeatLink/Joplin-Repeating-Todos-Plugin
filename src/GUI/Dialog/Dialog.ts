@@ -39,7 +39,16 @@ async function getRecurrence(recurrenceFormData){
 
 export async function openDialog(dialogHandle, RecurrenceData) {
     await loadRecurrence(dialogHandle, RecurrenceData);
+
     const result = await joplin.views.dialogs.open(dialogHandle);
+
+    // Get a note ID, title and body
+    const noteId = 'some_note_id';
+    const note = await joplin.data.get(['notes', "fe78a506b15d46b9b142e1def34ee7f6"], { fields: ['id', 'title', 'body'] });
+    console.log(note)
+
+
+
     return (result.id == 'ok'? await getRecurrence(result) : null);
 }
 
