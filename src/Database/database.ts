@@ -1,12 +1,10 @@
+// Imports ############################################################################################################
 import joplin from "api";
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+const fs = joplin.require('fs-extra')
+const sqlite3 = joplin.require('sqlite3')
 
-const plugins = joplin.plugins as any
-const fs = plugins.require('fs-extra')
-const sqlite3 = plugins.require('sqlite3')
-
-
+// setupPluginFolder ##################################################################################################
 async function setupPluginFolder(directory: string){
     try {
         await fs.ensureDir(directory)
@@ -16,13 +14,41 @@ async function setupPluginFolder(directory: string){
     }
 }
 
+// setupDatabase ######################################################################################################
 export async function setupDatabase(){
-    const pluginDir = await plugins.dataDir();
+    const pluginDir = await joplin.plugins.dataDir();
     const databasePath = pluginDir + "/database.sqlite3";
     await setupPluginFolder(pluginDir)
     console.log(databasePath)
     var database = new sqlite3.Database(databasePath);
 }
+
+// Create Tables ######################################################################################################
+async function createTables(database){
+    database.run(`
+        CREATE TABLE Recurrence (
+            taskID TEXT PRIMARY KEY, 
+            enabled INTEGER,
+            interval TEXT,
+            intervalNumber INTEGER,
+            week_sunday INTEGER,
+            week_monday INTEGER,
+            week_tuesday INTEGER,
+            week_wednesday INTEGER, 
+            week_thursday INTEGER, 
+            week_friday INTEGER,
+            week_saturday INTEGER,
+            month_ordinal TEXT, 
+            month_weekday TEXT,
+            stop_type TEXT,
+            stop_date TEXT,
+            stop_number INTEGER
+        )
+    `)
+}
+
+
+
 
 
 
