@@ -1,3 +1,4 @@
+// Imports ########################################################################################
 import joplin from 'api';
 import { DialogResult } from 'api/types';
 import { Recurrence } from '../../Logic/recurrence';
@@ -14,7 +15,6 @@ export async function createDialog(){
 async function loadRecurrence(dialogHandle, recurrenceData:Recurrence){
     
 }
-
 
 async function getRecurrence(recurrenceFormData){
     var newRecurrenceData = recurrenceFormData.formData.recurrence;    
@@ -36,19 +36,3 @@ async function getRecurrence(recurrenceFormData){
     recurrence.stopInfo.number = Number(newRecurrenceData.StopNumber);
     return recurrence;
 }
-
-export async function openDialog(dialogHandle, RecurrenceData) {
-    await loadRecurrence(dialogHandle, RecurrenceData);
-
-    const result = await joplin.views.dialogs.open(dialogHandle);
-
-    // Get a note ID, title and body
-    const noteId = 'some_note_id';
-    const note = await joplin.data.get(['notes', "fe78a506b15d46b9b142e1def34ee7f6"], { fields: ['id', 'title', 'body'] });
-    console.log(note)
-
-
-
-    return (result.id == 'ok'? await getRecurrence(result) : null);
-}
-
