@@ -5,15 +5,19 @@ import { Recurrence } from '../../Logic/recurrence';
 
 export async function createDialog(){
     const Dialog = await joplin.views.dialogs.create('Dialog');
-    const DialogHTML = await require('./Dialog.html').default;
-    await joplin.views.dialogs.setHtml(Dialog, DialogHTML);
     await joplin.views.dialogs.addScript(Dialog, './GUI/Dialog/Dialog.js')
     await joplin.views.dialogs.addScript(Dialog, './GUI/Dialog/Dialog.css')
     return Dialog;
 }
 
-async function loadRecurrence(dialogHandle, recurrenceData:Recurrence){
-    
+export async function openDialog(dialog){
+    const result = await joplin.views.dialogs.open(dialog);             // Show Dialog
+    return result
+}
+
+export async function setRecurrence(dialogHandle, recurrenceData:Recurrence){
+    const DialogHTML = await require('./Dialog.html').default;
+    await joplin.views.dialogs.setHtml(dialogHandle, DialogHTML);
 }
 
 async function getRecurrence(recurrenceFormData){
