@@ -1,22 +1,24 @@
-/* Imports ***************************************************************************************/
+/* Imports *******************************************************************************************************************************/
 import { createDialog, openDialog, setRecurrence } from '../GUI/Dialog/Dialog';
 import { setupDialogButton } from '../GUI/DialogButton';
-import { setupDatabase, getRecord } from './database';
+import { setupDatabase, getRecord, updateRecord } from './database';
 import { getSelectedNote } from './joplin';
 import { Recurrence } from './recurrence';
 
+
+/* Global Variables **********************************************************************************************************************/
 var database = null;
 var dialog = null;
 
 
-/* onRecurrenceDialogButtonClicked ***************************************************************/
+/* onRecurrenceDialogButtonClicked *******************************************************************************************************/
 export async function onRecurrenceDialogButtonClicked(){
-    var selectedNote = await getSelectedNote()                                      // Get current note
-    var oldRecurrence: any = await getRecord(database, selectedNote.id)     // Get recurrence data for current note
-    await setRecurrence(dialog, oldRecurrence)                                      // load recurrence into dialog
-    var newRecurrence = await openDialog(dialog);                                   // open dialog
-
-
+    var selectedNote = await getSelectedNote()                         // Get current note
+    var selectedNoteID = selectedNote.id
+    var oldRecurrence = await getRecord(database, selectedNoteID)      // Get recurrence data for current note
+    await setRecurrence(dialog, oldRecurrence)                          // load recurrence into dialog
+    var newRecurrence = await openDialog(dialog);                       // open dialog
+    await updateRecord(database, selectedNoteID, newRecurrence)
     console.log(newRecurrence)
 
 // get results from dialog on closing
@@ -52,6 +54,7 @@ export async function main() {
     database = await setupDatabase();                               // Setup Database
     dialog = await createDialog();                                  // Setup Dialog
     await setupDialogButton();                                      // Setup Dialog Button
+
     //await setupTaskCompleted();
     //await setupMainLoop();
 }
