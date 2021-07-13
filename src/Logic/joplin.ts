@@ -3,12 +3,12 @@ import joplin from "api";
 export async function getAllNotes(){
     var allNotes = [];
     let pageNum = 0;
-    let more_pages_exist = false;
+    let morePagesExist = false;
 	do {
 		let response = await joplin.data.get(['notes'], { fields: ['id', 'title', 'body', 'todo_completed'], page: pageNum++})
         allNotes = allNotes.concat(response.items)
-        more_pages_exist = response.has_more;
-	} while (more_pages_exist)
+        morePagesExist = response.has_more;
+	} while (morePagesExist)
     return allNotes;
 }
 
