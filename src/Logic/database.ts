@@ -1,37 +1,33 @@
-/* database.ts **********************************************************************************
+/* database.ts ****************************************************************************************************************************
+    This file contains all functions involved in managing the recurrence database. This sqlite3 recurrence database is stored in the 
+    plugin directory and holds all of the specific details about how each task in joplin would recur if at all. Each recurrence id in the 
+    database corresponds with the note/task id in joplin which the recurrence affects.
+******************************************************************************************************************************************/
 
-    This file contains all functions involved in managing the recurrence database. This sqlite3
-    recurrence database is stored in the plugin directory and holds all of the specific details
-    about how each task in joplin would recur if at all. Each recurrence id in the database
-    corresponds with the note/task id in joplin which the recurrence affects.
-
-*/
-
-/* Imports ***************************************************************************************/
+/* Imports *******************************************************************************************************************************/
 import joplin from "api";
 import { Recurrence } from "./recurrence";
 import { getAllNotes, getNote } from "./joplin";
 const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
 
-/* setupDatabase ********************************************************************************
-    Runs the code required for database initialization and record updates. This should run at 
-    program start. 
+/* setupDatabase **************************************************************************************************************************
+    Runs the code required for database initialization and record updates. This should run at  program start. 
 */
 export async function setupDatabase(){
-    const pluginDir = await joplin.plugins.dataDir();               // Get Plugin Folder
-    await fs.ensureDir(pluginDir)                                   // Create Plugin Folder if it doesnt exist
-    const databasePath = pluginDir + "/database.sqlite3";           // Set database path
-    var database = new sqlite3.Database(databasePath);              // Create or open database
-    await createRecurrenceTable(database);                          // Create database table if it doesnt exist
-    await updateDatabase(database);                                 // Synchronizes the recurrence database with the joplin state
+    const pluginDir = await joplin.plugins.dataDir();                   // Get Plugin Folder
+    await fs.ensureDir(pluginDir)                                       // Create Plugin Folder if it doesnt exist
+    const databasePath = pluginDir + "/database.sqlite3";               // Set database path
+    var database = new sqlite3.Database(databasePath);                  // Create or open database
+    await createRecurrenceTable(database);                              // Create database table if it doesnt exist
+    await updateDatabase(database);                                     // Synchronizes the recurrence database with the joplin state
     return database
 }
 
-/* Create Table *********************************************************************************
+/* Create Table ***************************************************************************************************************************
     Creates the database table if it doesnt exist
 */
-async function createRecurrenceTable(database){                     // Create database table if it doesnt exist
+async function createRecurrenceTable(database){                         // Create database table if it doesnt exist
     database.run(`
         CREATE TABLE IF NOT EXISTS Recurrence (
             id TEXT PRIMARY KEY, 
@@ -54,74 +50,80 @@ async function createRecurrenceTable(database){                     // Create da
     `)
 }
 
-/* updateDatabase ********************************************************************************
-    This function synchronizes the recurrence database with joplin notes and todos by
-    1) Creating a recurrence record in the database for each note/todo in joplin if it doesnt exist
-    2) Deleting recurrence records from the database if it doesnt have a corresponding note in joplin
+/* updateDatabase *************************************************************************************************************************
+    This function synchronizes the recurrence database with joplin notes and todos by:
+        1) Creating a recurrence record in the database for each note/todo in joplin if it doesnt exist
+        2) Deleting recurrence records from the database if it doesnt have a corresponding note in joplin
     This function should be run at program startup
 */
 async function updateDatabase(database){
-    for (var note of await getAllNotes()){                          // For note in all notes
-        if (!await getRecord(database, note.id)){                   // If note id is not in recurrence database
-            var recurrence = new Recurrence()                       // Create new recurrence object
-            await createRecord(database, note.id, recurrence)       // Add recurrence record to database
+    for (var note of await getAllNotes()){                              // For note in all notes
+        if (!await getRecord(database, note.id)){                       // If note id is not in recurrence database
+            var recurrence = new Recurrence()                           // Create blank recurrence for recurrence record
+            await createRecord(database, note.id, recurrence)           // Add blank recurrence object to database
         }
     }
-    for (var record of await getAllRecords(database)){              // For recurrence record in recurrence database
-        if (!await getNote(record.id)){                             // If corresponding record id not in notes
-            await deleteRecord(database, record.id)                 // delete record
+    for (var record of await getAllRecords(database)){                  // For recurrence record in recurrence database
+        if (!await getNote(record.id)){                                 // If corresponding record id not in notes
+            await deleteRecord(database, record.id)                     // delete record
         }
     }
 }
 
-/* getallDatabaseRecords **************************************************************************
-    This is a helper function that gets a recurrence record from the database for the corresponding
-    note ID. 
-    
-    Note that sqlite3 is not compatible with async/await functionality, thus the need for the Promise
-    code below. If there are better ways to do this, please let me know
+/* getallDatabaseRecords ******************************************************************************************************************
+    This is a helper function that gets a recurrence record from the database for the corresponding note ID. 
+    Note that sqlite3 is not compatible with async/await functionality, thus the need for the query to be written as a promise. If there 
+    are better ways to do this, please let me know
 */
 async function getAllRecords(database){
-    var records: Array<any> = await new Promise((resolve,reject) => {           // Create promise for callback
-        database.all(                                                           // Runs the database all command
-            `SELECT * FROM Recurrence`,                                         // SQL Query
-            (err, row) => { if(err) { reject(err) } else { resolve(row) } }     // Callback function written as promise
+    var records: Array<any> = null;                                     // Initializes the database records variable
+    records = await new Promise((resolve,reject) => {                   // set records variable to database query as promise function 
+        database.all(                                                   // Runs the database.all command
+            `SELECT * FROM Recurrence`,                                 // SQL Query to select all records
+            (err, row) => {                                             // Sets the callback function to the promise processor
+                if(err) { reject(err) } else { resolve(row) } 
+            }     
         )
     })
-    var recurrences = []                                                        // Create final recurrences array
-    for (var record of records){                                                // for each record in the returned records
-        recurrences.push({                                                      // Push to the recurrences array an object consisting of
-            id: record.id,                                                      // the recurrence id...
-            recurrence: convertRecordToRecurrence(record)                       // and the recurrence itself
+    var recurrences = []                                                // Create final recurrence array
+    for (var record of records){                                        // for each record in the returned records
+        recurrences.push({                                              // Push to the recurrences array an object consisting of
+            id: record.id,                                              // the recurrence id...
+            recurrence: convertRecordToRecurrence(record)               // and the recurrence itself
         })
     }
-    return recurrences                                                          // Return the database records
+    return recurrences                                                  // Return the recurrence array
 }
 
-/* getDatabaseRecord *****************************************************************************
-    This is a helper function that gets a recurrence record from the database for the corresponding
-    note ID. 
-    
-    Note that sqlite3 is not compatible with async/await functionality, thus the need 
-    for the Promise code below. If there are better ways to do this, please let me know.
+/* getDatabaseRecord **********************************************************************************************************************
+    This is a helper function that gets a recurrence record from the database for the corresponding note ID. 
+    Note that sqlite3 is not compatible with async/await functionality, thus the need for the query to be written as a promise. If there 
+    are better ways to do this, please let me know
 */
 export async function getRecord(database, id): Promise<Recurrence>{
-    var record: any = await new Promise((resolve,reject) => {                   // Create Promise for callback
-        database.get(                                                           // Run the database get command
-            `SELECT * FROM Recurrence WHERE id = $id`,                          // SQL Query
-            {$id: id},                                                          // Parameters
-            (err, row) => { if(err) { reject(err) } else { resolve(row) } }     // Callback function written as promise
+    var record: any = null;                                             // Initialize database record variable
+    record = await new Promise((resolve,reject) => {                    // set record variable to database query as promise function        
+        database.get(                                                   // Run the database get command
+            `SELECT * FROM Recurrence WHERE id = $id`,                  // SQL Query
+            {$id: id},                                                  // Parameters
+            (err, row) => {                                             // Sets the callback function to the promise processor
+                if(err) { reject(err) } else { resolve(row) } 
+            }    
         )
     })
-    return record != undefined ? convertRecordToRecurrence(record) : null       // If record isnt undefined, return the converted recurrence object, else null
+    if (record != undefined) {                                          // if record exists...
+        return convertRecordToRecurrence(record)                        // convert to recurrence object and return
+    } else {                                                            // else
+        return null                                                     // return null
+    }                                                
 }
 
-/* createDatabaseRecords **************************************************************************
-    This is a helper function that creates a new recurrence record in the recurrence database
-    when given the noteID and recurrence data object.
+/* createDatabaseRecords ******************************************************************************************************************
+    This is a helper function that creates a new recurrence record in the recurrence database when given the noteID and recurrence data 
+    object.
 */
 async function createRecord(database, id: string, recurrence:Recurrence){
-    database.run(                                                               // Run the database run command
+    database.run(                                                       // Run the database insertion command
         `INSERT INTO Recurrence VALUES (
             $id, 
             $enabled, 
@@ -139,7 +141,7 @@ async function createRecord(database, id: string, recurrence:Recurrence){
             $stop_type,
             $stop_date,
             $stop_number
-        );`, {                                                                  // Parameters
+        );`, {                                                          // Parameters
             $id: id,
             $enabled: recurrence.enabled,
             $interval: recurrence.interval,
@@ -160,18 +162,19 @@ async function createRecord(database, id: string, recurrence:Recurrence){
     )
 }
 
-/* deleteDatabaseRecord ****************************************************************************
-    This is a helper function that deletes a recurrence record from the database for the corresponding
-    note ID.
+/* deleteDatabaseRecord *******************************************************************************************************************
+    This is a helper function that deletes a recurrence record from the database for the corresponding note ID.
 */
 async function deleteRecord(database, id){
-    await database.run(                                                         // Run the database run command
-        `DELETE FROM Recurrence WHERE id = $id`,                            // SQL Query
-        {$id: id}                                                           // Parameters
+    await database.run(                                                 // Run the database run command
+        `DELETE FROM Recurrence WHERE id = $id`,                        // SQL Query
+        {$id: id}                                                       // Parameters
     )
 }
 
-
+/* convertTecordToRecurrence **************************************************************************************************************
+    This is a helper function to convert a database record from an sqlite3 output to a recurrence object
+*/
 function convertRecordToRecurrence(record): Recurrence{
     var recurrence = new Recurrence()
     recurrence.enabled = record.enabled == 1 ? true : false 

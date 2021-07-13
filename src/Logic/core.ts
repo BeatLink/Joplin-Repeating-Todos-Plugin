@@ -46,7 +46,7 @@ export async function onTaskCompleted(){
 //Resetting the task
   //  Loop checks list for any reset date that has passed and if yes, unchecks the recurrence date for that task, allowing the task to be done again
 
-/* Main ******************************************************************************************/
+/* Main **********************************************************************************************************************************/
 export async function main() {
     await console.info('Repeating To-Dos Plugin started!');         // Log startup to console
     database = await setupDatabase();                               // Setup Database
