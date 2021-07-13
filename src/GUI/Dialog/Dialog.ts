@@ -17,8 +17,9 @@ export async function openDialog(dialog){
 
 export async function setRecurrence(dialogHandle, recurrenceData:Recurrence){
     const DialogHTML = await require('./Dialog.html').default;
-    DialogHTML.replace("RECURRENCE_DATA", "Weeble")
-    await joplin.views.dialogs.setHtml(dialogHandle, DialogHTML);
+    var replacedHTML = DialogHTML.replace("RECURRENCE_DATA", "Weeble")
+    console.log(DialogHTML)
+    await joplin.views.dialogs.setHtml(dialogHandle, replacedHTML);
 }
 
 export async function getRecurrence(recurrenceFormData){
