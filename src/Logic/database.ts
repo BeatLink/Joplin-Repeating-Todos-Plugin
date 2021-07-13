@@ -50,7 +50,7 @@ async function createRecurrenceTable(database){
             stop_number INTEGER
         )
     `                                                                   // SQL Query
-    runQuery(database.run, createQuery, null)                           // Run database create table command 
+    runQuery(database, 'run', createQuery, {})                          // Run database create table command 
 }
 
 /* updateDatabase *************************************************************************************************************************
@@ -78,7 +78,7 @@ async function updateDatabase(database){
 async function getAllRecords(database){
     var records: Array<any> = null;                                     // Initializes the database records variable
     var selectQuery = `SELECT * FROM Recurrence`                        // SQL Query to select all records
-    records = await runQuery(database.all, selectQuery, null);          // runs the query and saves the result to the variable
+    records = await runQuery(database, 'all', selectQuery, {});         // runs the query and saves the result to the variable
     var recurrences = []                                                // Create final recurrence array
     for (var record of records){                                        // for each record in the returned records
         recurrences.push({                                              // Push to the recurrences array an object consisting of
@@ -97,19 +97,19 @@ async function getAllRecords(database){
 export async function getRecord(database, id): Promise<Recurrence>{
     var record: any = null;                                             // Initialize database record variable
     var selectQuery = `SELECT * FROM Recurrence WHERE id = $id`         // Create SQL Query for the command
-    var selectParameter = {$id: id}                                     // Create SQL Parameters for command
-    record = await runQuery(database.get, selectQuery, selectParameter) // Runs the query and saves the result to the variable
+    var selectParam = {$id: id}                                         // Create SQL Parameters for command
+    record = await runQuery(database, 'get', selectQuery, selectParam)  // Runs the query and saves the result to the variable
     return record != undefined ? getRecordAsRecurrence(record) : null   // Returns record as recurrence if it exists, otherwise null
 }
 
-/* createDatabaseRecords ******************************************************************************************************************
+/* createDrunQueryatabaseRecords ******************************************************************************************************************
     This is a helper function that creates a new recurrence record in the recurrence database when given the noteID and recurrence data 
     object.
 */
 async function createRecord(database, id: string, recurrence:Recurrence){
-    var insertQuery = `INSERT INTO Recurrence VALUES ($id);`            // SQL Query
+    var insertQuery = `INSERT INTO Recurrence (id) VALUES ($id);`       // SQL Query
     var insertParameters = {$id: id}                                    // Parameter
-    await runQuery(database.run, insertQuery, insertParameters)         // Run the database insertion command
+    await runQuery(database, 'run', insertQuery, insertParameters)      // Run the database insertion command
     await updateRecord(database, id, recurrence);                       // Runs the database update record command
 }
 
@@ -155,7 +155,7 @@ export async function updateRecord(database, id: string, recurrence:Recurrence){
         $stop_date: recurrence.stopInfo.date,
         $stop_number: recurrence.stopInfo.number
     }
-    await runQuery(database.run, updateQuery, updateParameters)         // Runs the database update query
+    await runQuery(database, 'run', updateQuery, updateParameters)         // Runs the database update query
 }
 
 /* deleteDatabaseRecord *******************************************************************************************************************
@@ -164,21 +164,26 @@ export async function updateRecord(database, id: string, recurrence:Recurrence){
 async function deleteRecord(database, id){
     var deleteQuery = `DELETE FROM Recurrence WHERE id = $id`           // SQL Query
     var deleteParameters = {$id: id}                                    // Parameters
-    await runQuery(database.run, deleteQuery, deleteParameters)         // Run the database run command
+    await runQuery(database, 'run', deleteQuery, deleteParameters)      // Run the database run command
 }
 
 /* runDatabaseQuery *********************************************************************************************************************
     Sqlite3 does not support async/await functionality, thus the need for this promise based function to ruin the sqlite functions. 
     If there are better ways to do this, please let me know
 */
-async function runQuery(databaseFunction, SQLQuery, parameters): Promise<any>{
+async function runQuery(database, func, SQLQuery, parameters): Promise<any>{
     return await new Promise(                                           // Processes the below promise and returns the result
         (resolve, reject) => {                                          // Create the promise function
-            databaseFunction(                                           // Runs the passed database function with...
-                SQLQuery,                                               // the passed sql query...
-                parameters,                                             // the passed parameters...
-                (err, row) => { err ? reject(err) : resolve(row) }      // and the database callback written as a promise processor
-            )
+            const callback = (err, row) => {                            // Creates database callback written as a promise processor
+                err ? reject(err) : resolve(row)
+            }
+            if (func == 'run'){                                         // If requested function is run...
+                database.run (SQLQuery,parameters, callback)            // Call the database run command
+            } else if (func == 'get'){                                  // If requested function is get
+                database.get(SQLQuery, parameters, callback)            // Call the database get function with the callback
+            } else if (func = 'all'){                                   // If requested function is all
+                database.all(SQLQuery, parameters, callback)            // Call the database all function with the callback
+            }
         }
     )
 }
