@@ -1,26 +1,155 @@
-/* ########################################################## READ ME ####################################################################
+/*********************************************************** READ ME **********************************************************************
 
     The recurrence logic contained in this file started out as a part of an old python todo app project of mine, this most of this code
     is in the python syntax and would need to be ported to typescript equivalents before it will be functional. Do not use any file with
     this notice.
 
+******************************************************************************************************************************************/
+
+
+/* Recurrence *****************************************************************************************************************************
+
+    Handles all matters relating to tasks that repeat on a periodical basis
+    
+    Properties
+
+    enabled
+        This is a boolean that determines whether the task reccurs or not. If false, this task will not be processed at all by the recurrence
+        system once flagged as complete. 
+
+    interval
+        This string specifies the interval between recurrences. Eg. every minute, every hour, every day ect. 
+        Valid values are: ['minute', 'hour', 'day', 'week', 'month', 'year']
+
+    intervalNumber
+        This number represents the number of the above interval between recurrences. Eg every 1 minute, every 2 minute, every 3 minute, ect.
+        Valid values are positive integers from 1 upwards
+
+    weekSunday to weekSaturday
+        These seven booleans determine which days of the week a weekly task can reccur on. Eg. If weekMonday, weekWednesday and weekFriday
+        are true  and all the others are false, the task will repeat every x number of weeks on Monday, Wednesday and Friday. 
+    
+    monthOrdinal and monthWeekday
+        If both are set, these two strings determine which day of the month a monthly task can repeat on. Eg. If month ordinal is set to 
+        'second' and  monthWeekday is set to 'friday', the task will repeat every month on the second friday. If one or both strings arent set, 
+        the task will only recur every month on the day it was completed, not a particular weekday in the month. 
+        Valid values for monthOrdinal are ['', 'first', 'second', 'third', 'fourth', 'last']
+        Valid values for monthWeekday are ['', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    
+    stopType, stopDate and stopNumber
+        These string, date and integer respectively, describe the criteria for when the task should stop recurring. If stopType is set to 'never', 
+        the task will recur indefinitely. If the stopType is set to 'date' the task will stop recurring on the date specified in stopDate. 
+        If stopType is set to 'number', the task will only repeat for the number of times specified in stopNumber. Eg, repeat 5 times
+        Valid values for stopType are ['never', 'date', 'number']
+        Valid values stop date are null and any datetime object
+        Valid values for stopNumber are any positive integer (zero and above)
 */
 
+export class Recurrence {
+    enabled = false;                                                    // Indicates whether task recurrs or not
+    interval = 'minute';                                                // Interval between recurrences 
+    intervalNumber = 1;                                                 // Number of intervals between recurrences, eg every 5 minutes or every 2 days. 
+    weekSunday = false;                                                // True if task is to be done on Sunday
+    weekMonday = false;                                                // True if task is to be done on Monday
+    weekTuesday = false;                                               // True if task is to be done on Tuesday
+    weekWednesday = false;                                             // True if task is to be done on Wednesday
+    weekThursday = false;                                              // True if task is to be done on Thursday
+    weekFriday = false;                                                // True if task is to be done on Friday
+    weekSaturday = false;                                              // True if task is to be done on Saturday
+    monthOrdinal = '';                                                 // The position of the weekday of the month a monthly task should repeat on
+    monthWeekday = '';                                                 // The weekday of the month a monthly task should recur on
+    stopType = 'never'                                                 // Indicates the stop criteria. 
+    stopDate = null                                                    // The date the task should stop repeating.
+    stopNumber = 1                                                     // The number of times a task should repeat.
 
+ 
+
+    /* 
+    Class that represents the specific weekday of the month the task will repeat on (eg, first sunday, last friday)
+    */
+
+
+    //public getString(){
+    //    /* Returns a human readable string representing the weekday of the month */
+    //    if (this.ordinal && this.weekday) {
+    //        return `the ${this.ordinal} ${this.weekday[0].toUpperCase() + this.weekday.slice(1)}`;
+    //    } else {
+    //        return '';
+    //    }
+    //}
+
+
+   /*
+    def should_stop(self):
+        """Returns boolean representing whether a task should stop repeating"""
+        stop_date_passed = self.type == 'date' and self.date and self.date <= arrow.now()
+        stop_number_reached = self.type == 'number' and isinstance(self.number, int) and int(self.number) <= 1
+        return True if stop_date_passed or stop_number_reached else False
+
+    def update_number(self):
+        if self.type == 'number' and self.number > 1:
+            self.number -= 1
+    */
+
+
+    /*
+    public get_next_date(initial_date) {
+
+        """
+        Gets the next date and time after the initial date that the task would repeat
+        """
+        if self.enabled and initial_date <= arrow.now():
+            if self.interval == 'week' and self.weekdays.arrow_set:
+                new_date = self.weekdays.get_next_date(initial_date, self.intervalnumber)
+            elif (
+                    self.interval == 'month') and (
+                    self.weekday_of_month.weekday is not None) and (
+                    self.weekday_of_month.ordinal is not None):
+                new_date = self.weekday_of_month.get_next_date(initial_date, self.intervalnumber)
+            else:
+                new_date = initial_date.shift(**{self.interval + 's': self.intervalnumber})
+        else:
+            new_date = initial_date
+
+        # Stops task from repeating if necessary or updates the stop repeating resources
+        if self.stop_info.should_stop():
+            self.enabled = False
+            self.stop_info.type = 'never'
+        else:
+            self.stop_info.update_number()
+
+        # return the new date
+        return new_date
+
+
+    }
+    @property
+    def string(self):
+        """Returns the recurrence in a human readable format. Eg Every week on thursdays"""
+        if self.enabled:
+            string = f'every {str(self.intervalnumber)} {self.interval}s' if self.intervalnumber > 1 else f'every {self.interval}'
+            if self.interval == 'week' and self.weekdays.arrow_set:
+                string += f' on {self.weekdays.string}'
+            elif (
+                    self.interval == 'month') and (
+                    self.weekday_of_month.ordinal is not None) and (
+                    self.weekday_of_month.weekday is not None):
+                string += f' on {self.weekday_of_month.string}'
+            return string
+        else:
+            return ''
+        }
+        */
+
+}
 
 export class WeekDays {
     /* ------------------------------------------------------------------------------------------------
     Contains the resources and methods related to the weekdays used in the recurrence class for 
     weekly recurrences 
-    ------------------------------------------------------------------------------------------------ */
+    ------------------------------------------------------------------------------------------------ 
 
-    sunday = false;
-    monday = false;
-    tuesday = false;
-    wednesday = false;
-    thursday = false;
-    friday = false;
-    saturday = false;
+
 
     private getMap(){
         return new Map([
@@ -46,14 +175,14 @@ export class WeekDays {
     return set([weekday_index for weekday_index, enabled in enumerate(self.dict.values()) if enabled])
 
     }
-    */
+    
 
 
     public getStringArray(){
         /* --------------------------------------------------------------------------------------------
         Returns a list of strings representing the enabled weekday. 
         Eg. ['Sunday', 'Monday', 'Tuesday']
-        -------------------------------------------------------------------------------------------- */
+        -------------------------------------------------------------------------------------------- 
         let weekdays = [];
         for (let [day, enabled] of this.getMap()) {
             if (enabled) {
@@ -124,23 +253,8 @@ export class WeekDays {
 
 }
 
-class WeekdayOfMonth {
-    /* 
-    Class that represents the specific weekday of the month the task will repeat on (eg, first sunday, last friday)
-    */
 
-    ordinal = '';   //A string representing the ordinal of the day. Valid Values: '', 'first', 'second', 'third', 'fourth', 'last'
-    weekday = '';   //A string representing the day of the week. Valid values: '', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'
 
-    public getString(){
-        /* Returns a human readable string representing the weekday of the month */
-        if (this.ordinal && this.weekday) {
-            return `the ${this.ordinal} ${this.weekday[0].toUpperCase() + this.weekday.slice(1)}`;
-        } else {
-            return '';
-        }
-    }
-}
 
 
 
@@ -172,92 +286,4 @@ class WeekdayOfMonth {
 
                 */
 
-// Stop Information #####################################################################################################
-class StopInfo {
-    /*
-    Handles when a task should stop recurring
-    The task should stop recurring if the stop date has passed, or if the stop number is 1 or less
-    */
 
-    type = 'never'  //String indicating the stop criteria. Valid Values are 'date', 'number' and 'never'
-    date = null     //Date object representing the date the task should stop repeating.
-    number = 1      //Integer representing the number of times before task stops repeating.
- 
-
-   /*
-    def should_stop(self):
-        """Returns boolean representing whether a task should stop repeating"""
-        stop_date_passed = self.type == 'date' and self.date and self.date <= arrow.now()
-        stop_number_reached = self.type == 'number' and isinstance(self.number, int) and int(self.number) <= 1
-        return True if stop_date_passed or stop_number_reached else False
-
-    def update_number(self):
-        if self.type == 'number' and self.number > 1:
-            self.number -= 1
-    */
-}
-
-
-
-export class Recurrence {
-    /*
-    Handles all matters relating to tasks that repeat on a periodical basis
-    */
-
-    enabled = false;        // Boolean to indicate whether the task recurs or not.
-    interval = 'minute';    // String representing the time interval. Valid values are 'minute', 'hour', 'day', 'week', 'month', 'year'
-    intervalNumber = 1;          // Integer representing how many intervals between recurrences, eg every 5 minutes or every 2 days. Valid values are positive integers
-    weekdays = new WeekDays();        //:WeekDays        // See WeekDays for more info
-    weekdayOfMonth = new WeekdayOfMonth();  //:WeekdayOfMonth  // See WeekdayOfMonth for more info
-    stopInfo = new StopInfo();        //:stopInfo        // See StopInfo for more info
-
-    /*
-    public get_next_date(initial_date) {
-
-        """
-        Gets the next date and time after the initial date that the task would repeat
-        """
-        if self.enabled and initial_date <= arrow.now():
-            if self.interval == 'week' and self.weekdays.arrow_set:
-                new_date = self.weekdays.get_next_date(initial_date, self.intervalnumber)
-            elif (
-                    self.interval == 'month') and (
-                    self.weekday_of_month.weekday is not None) and (
-                    self.weekday_of_month.ordinal is not None):
-                new_date = self.weekday_of_month.get_next_date(initial_date, self.intervalnumber)
-            else:
-                new_date = initial_date.shift(**{self.interval + 's': self.intervalnumber})
-        else:
-            new_date = initial_date
-
-        # Stops task from repeating if necessary or updates the stop repeating resources
-        if self.stop_info.should_stop():
-            self.enabled = False
-            self.stop_info.type = 'never'
-        else:
-            self.stop_info.update_number()
-
-        # return the new date
-        return new_date
-
-
-    }
-    @property
-    def string(self):
-        """Returns the recurrence in a human readable format. Eg Every week on thursdays"""
-        if self.enabled:
-            string = f'every {str(self.intervalnumber)} {self.interval}s' if self.intervalnumber > 1 else f'every {self.interval}'
-            if self.interval == 'week' and self.weekdays.arrow_set:
-                string += f' on {self.weekdays.string}'
-            elif (
-                    self.interval == 'month') and (
-                    self.weekday_of_month.ordinal is not None) and (
-                    self.weekday_of_month.weekday is not None):
-                string += f' on {self.weekday_of_month.string}'
-            return string
-        else:
-            return ''
-        }
-        */
-
-}

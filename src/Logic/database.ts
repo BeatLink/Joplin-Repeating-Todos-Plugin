@@ -36,18 +36,18 @@ async function createRecurrenceTable(database){
             enabled INTEGER,
             interval TEXT,
             intervalNumber INTEGER,
-            week_sunday INTEGER,
-            week_monday INTEGER,
-            week_tuesday INTEGER,
-            week_wednesday INTEGER, 
-            week_thursday INTEGER, 
-            week_friday INTEGER,
-            week_saturday INTEGER,
-            month_ordinal TEXT, 
-            month_weekday TEXT,
-            stop_type TEXT,
-            stop_date TEXT,
-            stop_number INTEGER
+            weekSunday INTEGER,
+            weekMonday INTEGER,
+            weekTuesday INTEGER,
+            weekWednesday INTEGER, 
+            weekThursday INTEGER, 
+            weekFriday INTEGER,
+            weekSaturday INTEGER,
+            monthOrdinal TEXT, 
+            monthWeekday TEXT,
+            stopType TEXT,
+            stopDate TEXT,
+            stopNumber INTEGER
         )
     `                                                                   // SQL Query
     runQuery(database, 'run', createQuery, {})                          // Run database create table command 
@@ -123,18 +123,18 @@ export async function updateRecord(database, id: string, recurrence:Recurrence){
             enabled = $enabled,
             interval = $interval,
             intervalNumber = $intervalNumber,
-            week_sunday = $week_sunday,
-            week_monday = $week_monday,
-            week_tuesday = $week_tuesday,
-            week_wednesday = $week_wednesday,
-            week_thursday = $week_thursday,
-            week_friday = $week_friday,
-            week_saturday = $week_saturday,
-            month_ordinal = $month_ordinal,
-            month_weekday = $month_weekday,
-            stop_type = $stop_type,
-            stop_date = $stop_date,
-            stop_number = $stop_number
+            weekSunday = $weekSunday,
+            weekMonday = $weekMonday,
+            weekTuesday = $weekTuesday,
+            weekWednesday = $weekWednesday,
+            weekThursday = $weekThursday,
+            weekFriday = $weekFriday,
+            weekSaturday = $weekSaturday,
+            monthOrdinal = $monthOrdinal,
+            monthWeekday = $monthWeekday,
+            stopType = $stopType,
+            stopDate = $stopDate,
+            stopNumber = $stopNumber
         WHERE id = $id
     `                                                                   // SQL Query
     var updateParameters = {                                            // Parameters
@@ -142,18 +142,18 @@ export async function updateRecord(database, id: string, recurrence:Recurrence){
         $enabled: recurrence.enabled,
         $interval: recurrence.interval,
         $intervalNumber: recurrence.intervalNumber,
-        $week_sunday: recurrence.weekdays.sunday,
-        $week_monday: recurrence.weekdays.monday,
-        $week_tuesday: recurrence.weekdays.tuesday,
-        $week_wednesday: recurrence.weekdays.wednesday,
-        $week_thursday: recurrence.weekdays.thursday,
-        $week_friday: recurrence.weekdays.friday,
-        $week_saturday: recurrence.weekdays.saturday,
-        $month_ordinal: recurrence.weekdayOfMonth.ordinal,
-        $month_weekday: recurrence.weekdayOfMonth.weekday,
-        $stop_type: recurrence.stopInfo.type,
-        $stop_date: recurrence.stopInfo.date,
-        $stop_number: recurrence.stopInfo.number
+        $weekSunday: recurrence.weekSunday,
+        $weekMonday: recurrence.weekMonday,
+        $weekTuesday: recurrence.weekTuesday,
+        $weekWednesday: recurrence.weekWednesday,
+        $weekThursday: recurrence.weekThursday,
+        $weekFriday: recurrence.weekFriday,
+        $weekSaturday: recurrence.weekSaturday,
+        $monthOrdinal: recurrence.monthOrdinal,
+        $monthWeekday: recurrence.monthWeekday,
+        $stopType: recurrence.stopType,
+        $stopDate: recurrence.stopDate,
+        $stopNumber: recurrence.stopNumber
     }
     await runQuery(database, 'run', updateQuery, updateParameters)         // Runs the database update query
 }
@@ -196,18 +196,18 @@ function getRecordAsRecurrence(record): Recurrence{
     recurrence.enabled = record.enabled == 1 ? true : false 
     recurrence.interval = record.interval
     recurrence.intervalNumber = record.intervalNumber
-    recurrence.weekdays.sunday = record.week_sunday == 1 ? true : false
-    recurrence.weekdays.monday = record.week_monday == 1 ? true : false
-    recurrence.weekdays.tuesday = record.week_tuesday == 1 ? true : false
-    recurrence.weekdays.wednesday = record.week_wednesday == 1 ? true : false
-    recurrence.weekdays.thursday = record.week_thursday == 1 ? true : false
-    recurrence.weekdays.friday = record.week_friday == 1 ? true : false
-    recurrence.weekdays.saturday = record.week_saturday == 1 ? true : false
-    recurrence.weekdayOfMonth.ordinal = record.month_ordinal
-    recurrence.weekdayOfMonth.weekday = record.month_weekday
-    recurrence.stopInfo.type = record.stop_type
-    recurrence.stopInfo.date = record.stop_date
-    recurrence.stopInfo.number = record.stop_number
+    recurrence.weekSunday = record.weekSunday == 1 ? true : false
+    recurrence.weekMonday = record.weekMonday == 1 ? true : false
+    recurrence.weekTuesday = record.weekTuesday == 1 ? true : false
+    recurrence.weekWednesday = record.weekWednesday == 1 ? true : false
+    recurrence.weekThursday = record.weekThursday == 1 ? true : false
+    recurrence.weekFriday = record.weekFriday == 1 ? true : false
+    recurrence.weekSaturday = record.weekSaturday == 1 ? true : false
+    recurrence.monthOrdinal = record.monthOrdinal
+    recurrence.monthWeekday = record.monthWeekday
+    recurrence.stopType = record.stopType
+    recurrence.stopDate = record.stopDate
+    recurrence.stopNumber = record.stopNumber
     return recurrence
 }
 
