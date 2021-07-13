@@ -62,6 +62,45 @@ export class Recurrence {
     stopDate = null                                                    // The date the task should stop repeating.
     stopNumber = 1                                                     // The number of times a task should repeat.
 
+    public toJSON(){
+        var dataObject = {
+            enabled: this.enabled,
+            interval: this.interval,
+            intervalNumber: this.intervalNumber,
+            weekSunday: this.weekSunday,
+            weekMonday: this.weekMonday,
+            weekTuesday: this.weekTuesday,
+            weekWednesday: this.weekWednesday,
+            weekThursday: this.weekThursday,
+            weekFriday: this.weekFriday,
+            weekSaturday: this.weekSaturday,
+            monthOrdinal: this.monthOrdinal,
+            monthWeekday: this.monthWeekday,
+            stopType: this.stopType,
+            stopDate: this.stopDate,
+            stopNumber: this.stopNumber
+        }
+        return JSON.stringify(dataObject)
+    }
+
+    public fromJSON(JSONstring){
+        var dataObject = JSON.parse(JSONstring)
+        this.enabled = dataObject.enabled
+        this.intervalNumber = dataObject.intervalNumber
+        this.interval = dataObject.interval;
+        this.weekSunday = dataObject.weekSunday
+        this.weekMonday = dataObject.weekMonday
+        this.weekTuesday = dataObject.weekTuesday
+        this.weekWednesday = dataObject.weekWednesday
+        this.weekThursday = dataObject.weekThursday
+        this.weekFriday = dataObject.weekFriday
+        this.weekSaturday = dataObject.weekSaturday
+        this.monthOrdinal = dataObject.monthOrdinal
+        this.monthWeekday = dataObject.monthWeekday
+        this.stopType = dataObject.stopType
+        this.stopDate = dataObject.stopDate
+        this.stopNumber = dataObject.StopNumber
+    }
  
 
     /* 
