@@ -162,10 +162,9 @@ export async function updateRecord(database, id: string, recurrence:Recurrence){
     This is a helper function that deletes a recurrence record from the database for the corresponding note ID.
 */
 async function deleteRecord(database, id){
-    await database.run(                                                 // Run the database run command
-        `DELETE FROM Recurrence WHERE id = $id`,                        // SQL Query
-        {$id: id}                                                       // Parameters
-    )
+    var deleteQuery = `DELETE FROM Recurrence WHERE id = $id`           // SQL Query
+    var deleteParameters = {$id: id}                                    // Parameters
+    await runQuery(database.run, deleteQuery, deleteParameters)         // Run the database run command
 }
 
 /* runDatabaseQuery *********************************************************************************************************************
