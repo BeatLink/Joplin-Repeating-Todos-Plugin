@@ -1,5 +1,5 @@
 /* Imports *******************************************************************************************************************************/
-import { createDialog, openDialog, setRecurrence } from '../GUI/Dialog/Dialog';
+import { createDialog, openDialog, setRecurrence, getRecurrence } from '../GUI/Dialog/Dialog';
 import { setupDialogButton } from '../GUI/DialogButton';
 import { setupDatabase, getRecord, updateRecord } from './database';
 import { getSelectedNote } from './joplin';
@@ -17,7 +17,7 @@ export async function onRecurrenceDialogButtonClicked(){
     var selectedNoteID = selectedNote.id
     var oldRecurrence = await getRecord(database, selectedNoteID)      // Get recurrence data for current note
     await setRecurrence(dialog, oldRecurrence)                          // load recurrence into dialog
-    var newRecurrence = await openDialog(dialog);                       // open dialog
+    var newRecurrence = await getRecurrence(dialog);                       // open dialog
     await updateRecord(database, selectedNoteID, newRecurrence)
     console.log(newRecurrence)
 

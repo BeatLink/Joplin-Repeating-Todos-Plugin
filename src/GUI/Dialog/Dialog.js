@@ -10,6 +10,9 @@ let StopDropdown = document.getElementById('StopDropdown');
 let StopNumber = document.getElementById('StopNumber');
 let StopDate = document.getElementById('StopDate');
 
+
+console.log(document.getElementById('RecurrenceData'))
+
 function onStopChanged(){
     if (EnabledCheckbox.checked && StopDropdown.value == 'date') {
         StopDate.style.display='block';
