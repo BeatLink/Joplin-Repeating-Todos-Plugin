@@ -1,5 +1,9 @@
-/*#intervalFieldset, #weekdaysFieldset, #monthWeekdaySection, #stopSection, #stopNumber, #stopDate, #monthWeekdayOrdinalDropdown{
+#intervalFieldset, #weekdaysFieldset, #monthWeekdayFieldset, #monthOrdinalDropdown, #stopFieldset, #stopNumber, #stopDate{
     display: none;
-}*/
+}
+
+fieldset {
+    margin: 12px 0px;
+}
 
 
