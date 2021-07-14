@@ -1,4 +1,4 @@
-#intervalFieldset, #weekdaysFieldset, #monthWeekdayFieldset, #monthOrdinalDropdown, #stopFieldset, #stopNumber, #stopDate{
+#intervalFieldset, #weekdaysFieldset, #monthWeekdayFieldset, #monthOrdinalDropdown, #stopFieldset, #stopTypeDropdown #stopNumberSpinbutton, #stopDatePciker{
     display: none;
 }
 

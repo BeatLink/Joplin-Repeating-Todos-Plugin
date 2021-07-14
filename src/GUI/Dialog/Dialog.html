@@ -11,7 +11,7 @@
 
     <fieldset id="intervalFieldset">
         <legend>Interval</legend>
-        <input type="number" id="intervalNumberSpinbutton" name="intervalNumber" min="1" max="999" step="1" value="1">
+        <input id="intervalNumberSpinbutton" type="number" name="intervalNumber" min="1" max="999" step="1" value="1">
         <select id="intervalDropdown" name="interval">
             <option value="minute" selected>Minute</option>
             <option value="hour">Hour</option>
@@ -84,8 +84,8 @@
             <option value="number">After # of Repeats</option>
             <option value="date">After a date</option>
         </select>
-        <input id="stopNumber" type="number" name="stopNumber" min="1" max="999" step="1" value="1">
-        <input id="stopDate" type="date"  name="stopDate">
+        <input id="stopNumberSpinbutton" type="number" name="stopNumber" min="1" max="999" step="1" value="1">
+        <input id="stopDatePicker" type="date"  name="stopDate">
     </fieldset>
 
 </form>

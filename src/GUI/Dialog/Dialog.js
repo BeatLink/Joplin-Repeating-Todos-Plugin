@@ -19,18 +19,171 @@ function loadData(){
     Saves data from the dialog recurrence object into the hidden data form
 */
 function saveData(){
-    var JSONstring = recurrence.toJSON()                                // Saves the recurrence data object to a json string
+    var JSONstring = JSON.stringify(recurrence)                         // Saves the recurrence data object to a json string
     var encodedString = btoa(JSONstring)                                // Encodes the json string to make it safe for HTML insertion
     recurrenceInput.value = encodedString                               // saves the encoded string to the hidden recurrence data form
 }
 
 /******************************************************************************************************************************************
- ******************************************************* Enabled **************************************************************************
+************************************************************* Stop Data *******************************************************************
+******************************************************************************************************************************************/
+let stopFieldset = document.getElementById('stopFieldset');
+let stopTypeDropdown = document.getElementById('stopTypeDropdown');
+let stopNumberSpinbutton = document.getElementById('stopNumberSpinbutton');
+let stopDatePicker = document.getElementById('stopDatePicker');
+
+stopTypeDropdown.addEventListener("change", onStopTypeChanged);
+stopNumberSpinbutton.addEventListener("change", onStopNumberChanged);
+stopDatePicker.addEventListener("change", onStopDateChanged);
+
+function onStopTypeChanged(){
+    recurrence.stopType = stopTypeDropdown.value
+    if (recurrence.enabled && recurrence.stopType == 'date') {
+        stopDatePicker.style.display='block';
+    } else {
+        stopDatePicker.style.display='none'
+    }
+    if (recurrence.enabled && recurrence.stopType == 'number') {
+        stopNumberSpinbutton.style.display='block';
+    } else {
+        stopNumberSpinbutton.style.display='none'
+    }
+    saveData()
+}
+
+function onStopNumberChanged(){
+    recurrence.stopNumber = stopNumberSpinbutton.value
+    saveData()
+}
+
+function onStopDateChanged(){
+    recurrence.stopDate = stopDatePicker.value
+    saveData()
+}
+
+
+/******************************************************************************************************************************************
+************************************************************* Month Weekday ***************************************************************
+*****************************************************************************************************************************************/
+let monthWeekdayFieldset = document.getElementById('monthWeekdayFieldset');
+let monthOrdinalDropdown = document.getElementById('monthOrdinalDropdown');
+let monthWeekdayDropdown = document.getElementById('monthWeekdayDropdown');
+
+monthWeekdayDropdown.addEventListener('change', onMonthWeekdayChanged);
+monthOrdinalDropdown.addEventListener('change', onMonthOrdinalChanged)
+
+function onMonthWeekdayChanged(){
+    recurrence.monthWeekday = monthWeekdayDropdown.value
+    if (recurrence.enabled && recurrence.interval == "month" && recurrence.monthWeekday != '') {
+        monthOrdinalDropdown.style.display = 'inline';
+    } else {
+        monthOrdinalDropdown.style.display = 'none';
+    }
+    saveData()
+}
+
+function onMonthOrdinalChanged(){
+    recurrence.monthOrdinal = monthOrdinalDropdown.value
+    saveData()
+}
+
+
+
+/*******************************************************************************************************************************************
+****************************************************************** Week ********************************************************************
+*******************************************************************************************************************************************/
+let WeekdaysFieldset = document.getElementById('weekdaysFieldset');
+let weekSundayCheckbox = document.getElementById('weekdaySundayCheckbox')
+let weekMondayCheckbox = document.getElementById('weekdayMondayCheckbox')
+let weekTuesdayCheckbox = document.getElementById('weekdayTuesdayCheckbox')
+let weekWednesdayCheckbox = document.getElementById('weekdayWednesdayCheckbox')
+let weekThursdayCheckbox = document.getElementById('weekdayThursdayCheckbox')
+let weekFridayCheckbox = document.getElementById('weekdayFridayCheckbox')
+let weekSaturdayCheckbox = document.getElementById('weekdaySaturdayCheckbox')
+weekSundayCheckbox.addEventListener("change", onWeekSundayCheckboxChanged);
+weekMondayCheckbox.addEventListener("change", onWeekMondayCheckboxChanged);
+weekTuesdayCheckbox.addEventListener("change", onWeekTuesdayCheckboxChanged);
+weekWednesdayCheckbox.addEventListener("change", onWeekWednesdayCheckboxChanged);
+weekThursdayCheckbox.addEventListener("change", onWeekThursdayCheckboxChanged);
+weekFridayCheckbox.addEventListener("change", onWeekFridayCheckboxChanged);
+weekSaturdayCheckbox.addEventListener("change", onWeekSaturdayCheckboxChanged);
+
+function onWeekSundayCheckboxChanged(){
+    recurrence.weekSunday = weekSundayCheckbox.checked
+    saveData()
+}
+function onWeekMondayCheckboxChanged(){
+    recurrence.weekMonday = weekMondayCheckbox.checked
+    saveData()
+}
+function onWeekTuesdayCheckboxChanged(){
+    recurrence.weekTuesday = weekTuesdayCheckbox.checked
+    saveData()
+}
+function onWeekWednesdayCheckboxChanged(){
+    recurrence.weekWednesday = weekWednesdayCheckbox.checked
+    saveData()
+}
+function onWeekThursdayCheckboxChanged(){
+    recurrence.weekThursday = weekThursdayCheckbox.checked
+    saveData()
+}
+function onWeekFridayCheckboxChanged(){
+    recurrence.weekFriday = weekFridayCheckbox.checked
+    saveData()
+}
+function onWeekSaturdayCheckboxChanged(){
+    recurrence.weekSaturday = weekSaturdayCheckbox.checked
+    saveData()
+}
+
+
+
+
+/******************************************************************************************************************************************
+***************************************************************** Interval **************************************************************** 
 ******************************************************************************************************************************************/
 
-let enabledCheckbox = document.getElementById('EnabledCheckbox');       // Gets the enabled checkbox
-enabledCheckbox.addEventListener("change", onEnabledChanged);           // Adds callback for when the checbox is ticked
+let intervalFieldset = document.getElementById('intervalFieldset');     // Gets the interval Fieldset
+let intervalNumberSpinbutton = document.getElementById('intervalNumberSpinbutton')  // Gets the interval number spinbutton
+let intervalDropdown = document.getElementById('intervalDropdown');     // Gets the interval dropdown
+intervalDropdown.addEventListener("change", onIntervalChanged);
+intervalNumberSpinbutton.addEventListener("change", onIntervalNumberChanged);
 
+/* onIntervalChanged **********************************************************************************************************************
+    Called if thee interval dropdown changes. It saves the changes to the hidden form and toggles the visibility of the other elements
+    depending on the current interval
+*/
+function onIntervalChanged(){
+    recurrence.interval = intervalDropdown.value
+    if (recurrence.enabled && recurrence.interval == "week") {
+        WeekdaysFieldset.style.display = 'block';
+    } else {
+        WeekdaysFieldset.style.display = 'none';
+    }
+    if (recurrence.enabled && recurrence.interval == "month") {
+        monthWeekdayFieldset.style.display='block'
+    } else {
+        monthWeekdayFieldset.style.display='none';
+    }
+    onMonthWeekdayChanged();
+    saveData()
+}
+
+/* onIntervalNumberChanged ****************************************************************************************************************
+    Called when the interval number spinbutton changes. Saves the changes to the hidden form
+*/
+function onIntervalNumberChanged(){
+    recurrence.intervalNumber = intervalNumberSpinbutton.value
+    saveData()
+}
+
+
+/******************************************************************************************************************************************
+ ***************************************************************** Enabled ****************************************************************
+******************************************************************************************************************************************/
+let enabledCheckbox = document.getElementById('enabledCheckbox');       // Gets the enabled checkbox
+enabledCheckbox.addEventListener("change", onEnabledChanged);           // Adds callback for when the checbox is ticked
 
 /* onEnabledChanged ***********************************************************************************************************************
     Called if the enabled checkbox is toggled. It saves the changes to the hidden form and toggles the visibility of the other elements
@@ -40,133 +193,13 @@ enabledCheckbox.addEventListener("change", onEnabledChanged);           // Adds 
 function onEnabledChanged(){
     recurrence.enabled = enabledCheckbox.checked                        // Saves the checkbox status to the recurrence object
     if (recurrence.enabled) {                                           // If the recurrence is enabled
-        intervalSection.style.display='block';                          // Show the interval section...
-        stopSection.style.display='block';                              // and the stop Section
+        intervalFieldset.style.display='block';                         // Show the interval Fieldset...
+        stopFieldset.style.display='block';                             // and the stop Fieldset
     } else {                                                            // Otherwise...
-        intervalSection.style.display='none';                           // Hide the interval section
-        stopSection.style.display='none';                               // And the stop section
+        intervalFieldset.style.display='none';                          // Hide the interval Fieldset
+        stopFieldset.style.display='none';                              // And the stop Fieldset
     }
     onIntervalChanged();                                                // Calls the interval changed function for updating
-    onStopChanged();                                                    // Calls the stop changed function for updating
-    saveData()
+    onStopType();                                                       // Calls the stop type changed function for updating
+    saveData()                                                          // Saves the data to the hidden form
 }
-
-
-/*******************************************************************************************************************************************************
- Interval 
- *******************************************************************************************************************************************************/
- let intervalSection = document.getElementById('IntervalSection');
- let IntervalDropdown = document.getElementById('IntervalDropdown');
- 
- IntervalDropdown.addEventListener("change", onIntervalChanged);
-
-
-function onIntervalChanged(){
-    recurrence.interval = IntervalDropdown.value
-    if (recurrence.enabled && recurrence.interval == "week") {
-        WeekdaysSection.style.display = 'block';
-    } else {
-        WeekdaysSection.style.display = 'none';
-    }
-    if (recurrence.enabled && recurrence.interval == "month") {
-        DayOfMonthSection.style.display='block'
-    } else {
-        DayOfMonthSection.style.display='none';
-    }
-    onDayOfMonthChanged();
-    saveData()
-}
-
-
-/******************************************************************************************************************************************
- Interval Number
-******************************************************************************************************************************************/
-
-intervalNumber: 1
-//on interval number changes
-
-
-
-/*******************************************************************************************************************************************
- Week
-*******************************************************************************************************************************************/
-let WeekdaysSection = document.getElementById('WeekdaysSection');
-let weekSunday = document.getElementById('weekdaySundayCheckbox')
-let weekMonday = document.getElementById('weekdayMondayCheckbox')
-let weekTuesday = document.getElementById('weekdayTuesdayCheckbox')
-let weekWednesday = document.getElementById('weekdayWednesdayCheckbox')
-let weekThursday = document.getElementById('weekdayThursdayCheckbox')
-let weekFriday = document.getElementById('weekdayFridayCheckbox')
-let weekSaturday = document.getElementById('weekdaySaturdayCheckbox')
-weekFriday: false
-weekMonday: false
-weekSaturday: false
-weekSunday: false
-weekThursday: false
-weekTuesday: false
-weekWednesday: false
-
-
-
-
-/******************************************************************************************************************************************
- Weekday of Month
- *****************************************************************************************************************************************/
-
- let DayOfMonthSection = document.getElementById('DayOfMonthSection');
- let DayOfMonthOrdinalDropdown = document.getElementById('DayOfMonthOrdinalDropdown');
- let DayOfMonthWeekdayDropdown = document.getElementById('DayOfMonthWeekdayDropdown');
-
-
-monthOrdinal: ""
-monthWeekday: ""
-
- DayOfMonthWeekdayDropdown.addEventListener('change', onDayOfMonthChanged);
-
-function onDayOfMonthChanged(){
-    if (enabledCheckbox.checked && IntervalDropdown.value == "month" && DayOfMonthWeekdayDropdown.value) {
-        DayOfMonthOrdinalDropdown.style.display = 'inline';
-    } else {
-        DayOfMonthOrdinalDropdown.style.display = 'none';
-    }
-}
-
-
-/******************************************************************************************************************************************
- Stop Data
- */
-
-
- let stopSection = document.getElementById('StopSection');
- let StopDropdown = document.getElementById('StopDropdown');
- let StopNumber = document.getElementById('StopNumber');
- let StopDate = document.getElementById('StopDate');
-
-
-
- stopDate: null
- stopNumber: 1
- stopType: "never"
-
-
-
-StopDropdown.addEventListener("change", onStopChanged);
-
-
- 
- 
-function onStopChanged(){
-    if (enabledCheckbox.checked && StopDropdown.value == 'date') {
-        StopDate.style.display='block';
-    } else {
-        StopDate.style.display='none'
-    }
-
-    if (enabledCheckbox.checked && StopDropdown.value == 'number') {
-        StopNumber.style.display='block';
-    } else {
-        StopNumber.style.display='none'
-    }
-}
-
-
