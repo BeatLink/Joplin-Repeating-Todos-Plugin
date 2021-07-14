@@ -17,28 +17,9 @@ export async function onRecurrenceDialogButtonClicked(){
     var selectedNoteID = selectedNote.id                               // Get ID of selected note
     var oldRecurrence = await getRecord(database, selectedNoteID)      // Get recurrence data for current note
     var newRecurrence = await openDialog(dialog, oldRecurrence);
-    console.log(newRecurrence)
     if (newRecurrence){
         await updateRecord(database, selectedNoteID, newRecurrence)
     }
-    //var newRecurrence = await getRecurrence(dialog);                       // open dialog
-
-// get results from dialog on closing
-// save results to database
-    //await loadRecurrence(dialog, recurrenceData);                   // Load Data into Dialog
-    
-//    return (result.id == 'ok'? await getRecurrence(result) : null);     //return data
-    //get data
-    // Get a note ID, title and body
-    //const noteId = 'some_note_id';
-    //const note = await joplin.data.get(['notes', "fe78a506b15d46b9b142e1def34ee7f6"], { fields: ['id', 'title', 'body'] });
-    //console.log(note)
-    // get recurrence data from persistence
-    //console.log(recurrenceResult)                
-    //save results from dialog to persistence
-    //return getRecurrence();
-    //export async function openDialog(dialogHandle, RecurrenceData) {
-    //}
 }
 
 

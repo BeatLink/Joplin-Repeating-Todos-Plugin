@@ -13,7 +13,6 @@ export async function createDialog(){
 export async function openDialog(dialog, recurrenceData){
     await setRecurrence(dialog, recurrenceData)                          // load recurrence into dialog
     var formResult = await joplin.views.dialogs.open(dialog);             // Show Dialog
-    console.log(formResult)
     return await getRecurrence(formResult)
 }
 
