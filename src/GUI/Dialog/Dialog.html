@@ -56,16 +56,16 @@
         </table>	
     </fieldset>
 
-    <fieldset id="DayOfMonthFieldset">
-        <legend>Day of Month</legend>
-        <select id="DayOfMonthOrdinalDropdown" name="dayOfMonthOrdinal">
+    <fieldset id="monthWeekdayFieldset">
+        <legend>WeekDay of Month</legend>
+        <select id="monthOrdinalDropdown" name="monthOrdinal">
             <option value="first">First</option>
             <option value="second">Second</option>
             <option value="third">Third</option>
             <option value="fourth">Fourth</option>
             <option value="last">Last</option>
         </select>
-        <select id="DayOfMonthWeekdayDropdown" name="dayOfMonthWeekday">
+        <select id="monthWeekdayDropdown" name="monthWeekday">
             <option value="">None</option>
             <option value="sunday">Sunday</option>
             <option value="monday">Monday</option>
@@ -79,12 +79,13 @@
 
     <fieldset id="stopFieldset">
         <legend>Repeating Stops</legend>
-        <select id="StopDropdown" name="StopType">
+        <select id="stopTypeDropdown" name="stopType">
             <option value="never">Never</option>
             <option value="number">After # of Repeats</option>
             <option value="date">After a date</option>
         </select>
-        <input id="StopNumber" type="number" name="StopNumber" min="1" max="999" step="1" value="1">
-        <input id="StopDate" type="date"  name="StopDate"> 
+        <input id="stopNumber" type="number" name="stopNumber" min="1" max="999" step="1" value="1">
+        <input id="stopDate" type="date"  name="stopDate">
     </fieldset>
+
 </form>
