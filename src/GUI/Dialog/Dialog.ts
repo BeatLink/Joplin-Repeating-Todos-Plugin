@@ -3,21 +3,26 @@ import joplin from 'api';
 import { DialogResult } from 'api/types';
 import { Recurrence } from '../../Logic/recurrence';
 
+const decode = (str: string):string => Buffer.from(str, 'base64').toString('binary');
+const encode = (str: string):string => Buffer.from(str, 'binary').toString('base64');
+
 export async function createDialog(){
-    const Dialog = await joplin.views.dialogs.create('Dialog');
-    await joplin.views.dialogs.addScript(Dialog, './GUI/Dialog/Dialog.js')
-    await joplin.views.dialogs.addScript(Dialog, './GUI/Dialog/Dialog.css')
-    return Dialog;
+    const dialog = await joplin.views.dialogs.create('Dialog');
+    await joplin.views.dialogs.addScript(dialog, './GUI/Dialog/Dialog.js')
+    await joplin.views.dialogs.addScript(dialog, './GUI/Dialog/Dialog.css')
+    return dialog;
 }
 
 export async function openDialog(dialog){
-    const result = await joplin.views.dialogs.open(dialog);             // Show Dialog
-    return result
+    return await joplin.views.dialogs.open(dialog);             // Show Dialog
 }
 
 export async function setRecurrence(dialogHandle, recurrenceData:Recurrence){
     const DialogHTML = await require('./Dialog.html').default;
-    var replacedHTML = DialogHTML.replace("RECURRENCE_DATA", "Weeble")
+
+    
+
+    var replacedHTML = DialogHTML.replace("RECURRENCE_DATA", btoa(recurrenceData.toJSON()))
     await joplin.views.dialogs.setHtml(dialogHandle, replacedHTML);
 }
 
@@ -27,17 +32,17 @@ export async function getRecurrence(recurrenceFormData){
     recurrence.enabled = ('Enabled' in newRecurrenceData ? true : false);    
     recurrence.intervalNumber = Number(newRecurrenceData.IntervalNumber);
     recurrence.interval = newRecurrenceData.Interval;
-    recurrence.week_sunday = ('weekdaySunday' in newRecurrenceData ? true : false);
-    recurrence.week_monday = ('weekdayMonday' in newRecurrenceData ? true : false);
-    recurrence.week_tuesday = ('weekdayTuesday' in newRecurrenceData ? true : false);
-    recurrence.week_wednesday = ('weekdayWednesday' in newRecurrenceData ? true : false);
-    recurrence.week_thursday = ('weekdayThursday' in newRecurrenceData ? true : false);
-    recurrence.week_friday = ('weekdayFriday' in newRecurrenceData ? true : false);
-    recurrence.week_saturday = ('weekdaySaturday' in newRecurrenceData ? true : false);
-    recurrence.month_ordinal = newRecurrenceData.dayOfMonthOrdinal;
-    recurrence.month_weekday = newRecurrenceData.dayOfMonthWeekday;
-    recurrence.stop_type = newRecurrenceData.StopType;
-    recurrence.stop_date = (newRecurrenceData.StopDate ? new Date(newRecurrenceData.StopDate) : null);
-    recurrence.stop_number = Number(newRecurrenceData.StopNumber);
+    recurrence.weekSunday = ('weekdaySunday' in newRecurrenceData ? true : false);
+    recurrence.weekMonday = ('weekdayMonday' in newRecurrenceData ? true : false);
+    recurrence.weekTuesday = ('weekdayTuesday' in newRecurrenceData ? true : false);
+    recurrence.weekWednesday = ('weekdayWednesday' in newRecurrenceData ? true : false);
+    recurrence.weekThursday = ('weekdayThursday' in newRecurrenceData ? true : false);
+    recurrence.weekFriday = ('weekdayFriday' in newRecurrenceData ? true : false);
+    recurrence.weekSaturday = ('weekdaySaturday' in newRecurrenceData ? true : false);
+    recurrence.monthOrdinal = newRecurrenceData.dayOfMonthOrdinal;
+    recurrence.monthWeekday = newRecurrenceData.dayOfMonthWeekday;
+    recurrence.stopType = newRecurrenceData.StopType;
+    recurrence.stopDate = (newRecurrenceData.StopDate ? new Date(newRecurrenceData.StopDate) : null);
+    recurrence.stopNumber = Number(newRecurrenceData.StopNumber);
     return recurrence;
 }
