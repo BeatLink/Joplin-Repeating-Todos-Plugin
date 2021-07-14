@@ -1,102 +1,90 @@
 <h1>Repeating To-Do</h1>
-<form name="recurrence">
-    <input id="RecurrenceData" type="hidden" value="RECURRENCE_DATA">
-    <fieldset id="EnabledFieldset">
+<form name="recurrenceForm">
+
+    <input id="recurrenceDataInput" type="hidden" value="RECURRENCE_DATA">
+
+    <fieldset id="enabledFieldset">
         <legend>Enabled</legend>
-        <section>
-        <input id="EnabledCheckbox" type="checkbox" name="Enabled" value="True">
-        <label for="Enabled">This Task Repeats</label></td>
-        </section>
+        <input id="enabledCheckbox" type="checkbox" name="enabled" value="True">
+        <label for="enabledCheckbox">This To-Do Repeats</label></td>
     </fieldset>
 
-    <section id="IntervalSection">
-        </br>
-        <fieldset>
-            <legend>Interval</legend>
-            <input type="number" id="IntervalNumber" name="IntervalNumber" min="1" max="999" step="1" value="1">
-            <select id="IntervalDropdown" name="Interval">
-                <option id="IntervalMinute" value="minute" selected>Minute</option>
-                <option value="hour">Hour</option>
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-                </select>
-        </fieldset>
-    </section>
+    <fieldset id="intervalFieldset">
+        <legend>Interval</legend>
+        <input type="number" id="intervalNumberSpinbutton" name="intervalNumber" min="1" max="999" step="1" value="1">
+        <select id="intervalDropdown" name="interval">
+            <option value="minute" selected>Minute</option>
+            <option value="hour">Hour</option>
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+        </select>
+    </fieldset>
 
-    <section id="WeekdaysSection">
-        </br>
-        <fieldset>
-            <legend>Weekdays</legend>
-            <table>
+    <fieldset id="weekdaysFieldset">
+        <legend>Weekdays</legend>
+        <table>
             <tr>
-                <td><input type="checkbox" id="weekSunday" name="weekdaySunday" value="true"></td>
-                <td><label for="sunday">Sunday</label></td>
+                <td><input id="weekSundayCheckbox" type="checkbox"  name="weekSunday" value="true"></td>
+                <td><label for="weekSundayCheckbox">Sunday</label></td>
             </tr>
             <tr>
-                <td><input type="checkbox" id="weekMonday" name="weekdayMonday" value="true"></td>
-                <td><label for="monday">Monday</label></td>
+                <td><input id="weekMondayCheckbox" type="checkbox" name="weekMonday" value="true"></td>
+                <td><label for="weekMondayCheckbox">Monday</label></td>
             </tr>
             <tr>
-                <td><input type="checkbox" id="weekTuesday" name="weekdayTuesday" value="true"></td>
-                <td><label for="tuesday">Tuesday</label></td>
+                <td><input id="weekTuesdayCheckbox" type="checkbox" name="weekTuesday" value="true"></td>
+                <td><label for="weekTuesdayCheckbox">Tuesday</label></td>
             </tr>
             <tr>
-                <td><input type="checkbox" id="weekWednesday" name="weekdayWednesday" value="true"></td>
-                <td><label for="wednesday">Wednesday</label></td>
+                <td><input id="weekWednesdayCheckbox" type="checkbox" name="weekWednesday" value="true"></td>
+                <td><label for="weekWednesdayCheckbox">Wednesday</label></td>
             </tr>
             <tr>
-                <td><input type="checkbox" id="weekThursday" name="weekdayThursday" value="true"></td>
-                <td><label for="thursday">Thursday</label></td>
+                <td><input id="weekThursdayCheckbox" type="checkbox" name="weekThursday" value="true"></td>
+                <td><label for="weekThursdayCheckbox">Thursday</label></td>
             </tr>
             <tr>
-                <td><input type="checkbox" id="weekFriday" name="weekdayFriday" value="true"></td>
-                <td><label for="friday">Friday</label></td>
+                <td><input id="weekFridayCheckbox" type="checkbox" name="weekFriday" value="true"></td>
+                <td><label for="weekFridayCheckbox">Friday</label></td>
             </tr>
             <tr>
-                <td><input type="checkbox" id="weekSaturday" name="weekdaySaturday" value="true"></td>
-                <td><label for="saturday">Saturday</label></td>
+                <td><input name="weekdaySaturdayCheckbox" type="checkbox" id="weekSaturday" value="true"></td>
+                <td><label for="weekdaySaturdayCheckbox">Saturday</label></td>
             </tr>
-            </table>	
-        </fieldset>
-    </section>
+        </table>	
+    </fieldset>
 
-    <section id="DayOfMonthSection">
-        </br id="DayOfMonthBr">
-        <fieldset id="DayOfMonth">
-            <legend>Day of Month</legend>
-            <select id="DayOfMonthOrdinalDropdown" name="dayOfMonthOrdinal">
-                <option value="first">First</option>
-                <option value="second">Second</option>
-                <option value="third">Third</option>
-                <option value="fourth">Fourth</option>
-                <option value="last">Last</option>
-            </select>
-            <select id="DayOfMonthWeekdayDropdown" name="dayOfMonthWeekday">
-                <option value="">None</option>
-                <option value="sunday">Sunday</option>
-                <option value="monday">Monday</option>
-                <option value="tuesday">Tuesday</option>
-                <option value="wednesday">Wednesday</option>
-                <option value="thursday">Thursday</option>
-                <option value="thursday">Friday</option>
-                <option value="thursday">Saturday</option>
-            </select>
-        </fieldset>
-    </section>
+    <fieldset id="DayOfMonthFieldset">
+        <legend>Day of Month</legend>
+        <select id="DayOfMonthOrdinalDropdown" name="dayOfMonthOrdinal">
+            <option value="first">First</option>
+            <option value="second">Second</option>
+            <option value="third">Third</option>
+            <option value="fourth">Fourth</option>
+            <option value="last">Last</option>
+        </select>
+        <select id="DayOfMonthWeekdayDropdown" name="dayOfMonthWeekday">
+            <option value="">None</option>
+            <option value="sunday">Sunday</option>
+            <option value="monday">Monday</option>
+            <option value="tuesday">Tuesday</option>
+            <option value="wednesday">Wednesday</option>
+            <option value="thursday">Thursday</option>
+            <option value="thursday">Friday</option>
+            <option value="thursday">Saturday</option>
+        </select>
+    </fieldset>
 
-    <section id="StopSection">
-        </br>
-        <fieldset>
-            <legend>Repeating Stops</legend>
-            <select id="StopDropdown" name="StopType">
-                <option value="never">Never</option>
-                <option value="number">After # of Repeats</option>
-                <option value="date">After a date</option>
-            </select>
-            <input id="StopNumber" type="number" name="StopNumber" min="1" max="999" step="1" value="1">
-            <input id="StopDate" type="date"  name="StopDate"> 
-        </fieldset>
-    </section>
+    <fieldset id="stopFieldset">
+        <legend>Repeating Stops</legend>
+        <select id="StopDropdown" name="StopType">
+            <option value="never">Never</option>
+            <option value="number">After # of Repeats</option>
+            <option value="date">After a date</option>
+        </select>
+        <input id="StopNumber" type="number" name="StopNumber" min="1" max="999" step="1" value="1">
+        <input id="StopDate" type="date"  name="StopDate"> 
+    </fieldset>
 </form>
