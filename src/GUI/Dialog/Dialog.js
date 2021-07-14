@@ -1,28 +1,4 @@
-/******************************************************************************************************************************************
-************************************************ Recurrence Data Management ***************************************************************
-******************************************************************************************************************************************/
 
-var recurrenceInput = document.getElementById('recurrenceDataInput')    // Gets the hidden input storing the recurrence data
-var recurrence = null;                                                  // Initializes the recurrence object
-loadData();                                                             // Loads the data into the recurrence object on dialog opening
-
-/* loadData *******************************************************************************************************************************
-    Loads data from the hidden data form into the dialog recurrence object
-*/
-function loadData(){
-    var encodedRecurrenceData = recurrenceInput.value                   // gets the encoded recurrence data from the hidden form
-    var decodedRecurrenceData = atob(encodedRecurrenceData)             // decodes the recurrence data into the json string
-    recurrence = JSON.parse(decodedRecurrenceData)                      // parse the recurrence json string into a usable data object
-}
-
-/* saveData *******************************************************************************************************************************
-    Saves data from the dialog recurrence object into the hidden data form
-*/
-function saveData(){
-    var JSONstring = JSON.stringify(recurrence)                         // Saves the recurrence data object to a json string
-    var encodedString = btoa(JSONstring)                                // Encodes the json string to make it safe for HTML insertion
-    recurrenceInput.value = encodedString                               // saves the encoded string to the hidden recurrence data form
-}
 
 /******************************************************************************************************************************************
 ************************************************************* Stop Data *******************************************************************
@@ -65,7 +41,7 @@ function onStopDateChanged(){
 /******************************************************************************************************************************************
 ************************************************************* Month Weekday ***************************************************************
 *****************************************************************************************************************************************/
-let monthWeekdayFieldset = document.getElementById('monthWeekdayFieldset');
+let monthFieldset = document.getElementById('monthFieldset');
 let monthOrdinalDropdown = document.getElementById('monthOrdinalDropdown');
 let monthWeekdayDropdown = document.getElementById('monthWeekdayDropdown');
 
@@ -92,14 +68,14 @@ function onMonthOrdinalChanged(){
 /*******************************************************************************************************************************************
 ****************************************************************** Week ********************************************************************
 *******************************************************************************************************************************************/
-let WeekdaysFieldset = document.getElementById('weekdaysFieldset');
-let weekSundayCheckbox = document.getElementById('weekdaySundayCheckbox')
-let weekMondayCheckbox = document.getElementById('weekdayMondayCheckbox')
-let weekTuesdayCheckbox = document.getElementById('weekdayTuesdayCheckbox')
-let weekWednesdayCheckbox = document.getElementById('weekdayWednesdayCheckbox')
-let weekThursdayCheckbox = document.getElementById('weekdayThursdayCheckbox')
-let weekFridayCheckbox = document.getElementById('weekdayFridayCheckbox')
-let weekSaturdayCheckbox = document.getElementById('weekdaySaturdayCheckbox')
+let weekFieldset = document.getElementById('weekFieldset');
+let weekSundayCheckbox = document.getElementById('weekSundayCheckbox')
+let weekMondayCheckbox = document.getElementById('weekMondayCheckbox')
+let weekTuesdayCheckbox = document.getElementById('weekTuesdayCheckbox')
+let weekWednesdayCheckbox = document.getElementById('weekWednesdayCheckbox')
+let weekThursdayCheckbox = document.getElementById('weekThursdayCheckbox')
+let weekFridayCheckbox = document.getElementById('weekFridayCheckbox')
+let weekSaturdayCheckbox = document.getElementById('weekSaturdayCheckbox')
 weekSundayCheckbox.addEventListener("change", onWeekSundayCheckboxChanged);
 weekMondayCheckbox.addEventListener("change", onWeekMondayCheckboxChanged);
 weekTuesdayCheckbox.addEventListener("change", onWeekTuesdayCheckboxChanged);
@@ -157,14 +133,14 @@ intervalNumberSpinbutton.addEventListener("change", onIntervalNumberChanged);
 function onIntervalChanged(){
     recurrence.interval = intervalDropdown.value
     if (recurrence.enabled && recurrence.interval == "week") {
-        WeekdaysFieldset.style.display = 'block';
+        weekFieldset.style.display = 'block';
     } else {
-        WeekdaysFieldset.style.display = 'none';
+        weekFieldset.style.display = 'none';
     }
     if (recurrence.enabled && recurrence.interval == "month") {
-        monthWeekdayFieldset.style.display='block'
+        monthFieldset.style.display='block'
     } else {
-        monthWeekdayFieldset.style.display='none';
+        monthFieldset.style.display='none';
     }
     onMonthWeekdayChanged();
     saveData()
@@ -200,6 +176,53 @@ function onEnabledChanged(){
         stopFieldset.style.display='none';                              // And the stop Fieldset
     }
     onIntervalChanged();                                                // Calls the interval changed function for updating
-    onStopType();                                                       // Calls the stop type changed function for updating
+    onStopTypeChanged();                                                       // Calls the stop type changed function for updating
     saveData()                                                          // Saves the data to the hidden form
+}
+
+
+/******************************************************************************************************************************************
+************************************************ Recurrence Data Management ***************************************************************
+******************************************************************************************************************************************/
+
+var recurrenceInput = document.getElementById('recurrenceDataInput')    // Gets the hidden input storing the recurrence data
+var recurrence = null;                                                  // Initializes the recurrence object
+loadData();                                                             // Loads the data into the recurrence object on dialog opening
+
+/* loadData *******************************************************************************************************************************
+    Loads data from the hidden data form into the dialog recurrence object
+*/
+function loadData(){
+    var encodedRecurrenceData = recurrenceInput.value                   // gets the encoded recurrence data from the hidden form
+    var decodedRecurrenceData = atob(encodedRecurrenceData)             // decodes the recurrence data into the json string
+    recurrence = JSON.parse(decodedRecurrenceData)                      // parse the recurrence json string into a usable data object
+    enabledCheckbox.checked = recurrence.enabled
+    intervalNumberSpinbutton.value = recurrence.intervalNumber
+    intervalDropdown.value = recurrence.interval
+    weekSundayCheckbox.checked = recurrence.weekSunday
+    weekMondayCheckbox.checked = recurrence.weekMonday
+    weekTuesdayCheckbox.checked = recurrence.weekTuesday
+    weekWednesdayCheckbox.checked = recurrence.weekWednesday
+    weekThursdayCheckbox.checked = recurrence.weekThursday
+    weekFridayCheckbox.checked = recurrence.weekFriday
+    weekSaturdayCheckbox.checked = recurrence.weekSaturday
+    monthWeekdayDropdown.value = recurrence.monthWeekday
+    monthOrdinalDropdown.value = recurrence.monthOrdinal
+    stopTypeDropdown.value = recurrence.stopType
+    stopDatePicker.value = recurrence.stopDate
+    stopNumberSpinbutton.value = recurrence.stopNumber
+    onEnabledChanged()
+    onIntervalChanged()
+    onMonthWeekdayChanged()
+    onStopTypeChanged()
+
+}
+
+/* saveData *******************************************************************************************************************************
+    Saves data from the dialog recurrence object into the hidden data form
+*/
+function saveData(){
+    var JSONstring = JSON.stringify(recurrence)                         // Saves the recurrence data object to a json string
+    var encodedString = btoa(JSONstring)                                // Encodes the json string to make it safe for HTML insertion
+    recurrenceInput.value = encodedString                               // saves the encoded string to the hidden recurrence data form
 }

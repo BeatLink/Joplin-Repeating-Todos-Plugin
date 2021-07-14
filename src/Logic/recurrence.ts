@@ -99,7 +99,7 @@ export class Recurrence {
         this.monthWeekday = dataObject.monthWeekday
         this.stopType = dataObject.stopType
         this.stopDate = dataObject.stopDate
-        this.stopNumber = dataObject.StopNumber
+        this.stopNumber = dataObject.stopNumber
     }
  
 

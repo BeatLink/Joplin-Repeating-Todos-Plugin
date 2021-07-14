@@ -16,12 +16,12 @@ export async function onRecurrenceDialogButtonClicked(){
     var selectedNote = await getSelectedNote()                         // Get current note
     var selectedNoteID = selectedNote.id                               // Get ID of selected note
     var oldRecurrence = await getRecord(database, selectedNoteID)      // Get recurrence data for current note
-    console.log(oldRecurrence)
-    await setRecurrence(dialog, oldRecurrence)                          // load recurrence into dialog
-    await openDialog(dialog);
-    var newRecurrence = await getRecurrence(dialog);                       // open dialog
-    await updateRecord(database, selectedNoteID, newRecurrence)
+    var newRecurrence = await openDialog(dialog, oldRecurrence);
     console.log(newRecurrence)
+    if (newRecurrence){
+        await updateRecord(database, selectedNoteID, newRecurrence)
+    }
+    //var newRecurrence = await getRecurrence(dialog);                       // open dialog
 
 // get results from dialog on closing
 // save results to database
