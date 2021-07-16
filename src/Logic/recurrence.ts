@@ -62,100 +62,6 @@ export class Recurrence {
     stopDate = null                                                    // The date the task should stop repeating.
     stopNumber = 1                                                     // The number of times a task should repeat.
 
-    private getWeekStringArray(){
-        var weekArray = []
-        if (this.weekSunday == true){
-            weekArray.push('Sunday')
-        }
-        if (this.weekMonday == true){
-            weekArray.push('Monday')
-        }
-        if (this.weekTuesday == true){
-            weekArray.push('Tuesday')
-        }
-        if (this.weekWednesday == true){
-            weekArray.push('Wednesday')
-        }
-        if (this.weekThursday == true){
-            weekArray.push('Thursday')
-        }
-        if (this.weekFriday == true){
-            weekArray.push('Friday')
-        }
-        if (this.weekSaturday == true){
-            weekArray.push('Saturday')
-        }
-        return weekArray
-    }
-
-    private getWeekIntegerArray(){
-        /*
-        Returns a set of integers ranging from 0-6 representing the enabled days. 0=Mon, 1=Tue...5=Sat, 6=Sun*/
-    //return set([weekday_index for weekday_index, enabled in enumerate(self.dict.values()) if enabled])
-        var weekArray = []
-        if (this.weekSunday == true){
-            weekArray.push(0)
-        }
-        if (this.weekMonday == true){
-            weekArray.push(1)
-        }
-        if (this.weekTuesday == true){
-            weekArray.push(2)
-        }
-        if (this.weekWednesday == true){
-            weekArray.push(3)
-        }
-        if (this.weekThursday == true){
-            weekArray.push(4)
-        }
-        if (this.weekFriday == true){
-            weekArray.push(5)
-        }
-        if (this.weekSaturday == true){
-            weekArray.push(6)
-        }
-        return weekArray
-    }
-
-    public toJSON(){
-        var dataObject = {
-            enabled: this.enabled,
-            interval: this.interval,
-            intervalNumber: this.intervalNumber,
-            weekSunday: this.weekSunday,
-            weekMonday: this.weekMonday,
-            weekTuesday: this.weekTuesday,
-            weekWednesday: this.weekWednesday,
-            weekThursday: this.weekThursday,
-            weekFriday: this.weekFriday,
-            weekSaturday: this.weekSaturday,
-            monthOrdinal: this.monthOrdinal,
-            monthWeekday: this.monthWeekday,
-            stopType: this.stopType,
-            stopDate: this.stopDate,
-            stopNumber: this.stopNumber
-        }
-        return JSON.stringify(dataObject)
-    }
-
-    public fromJSON(JSONstring){
-        var dataObject = JSON.parse(JSONstring)
-        this.enabled = Boolean(dataObject.enabled)
-        this.intervalNumber = Number(dataObject.intervalNumber)
-        this.interval = String(dataObject.interval);
-        this.weekSunday = Boolean(dataObject.weekSunday)
-        this.weekMonday = Boolean(dataObject.weekMonday)
-        this.weekTuesday = Boolean(dataObject.weekTuesday)
-        this.weekWednesday = Boolean(dataObject.weekWednesday)
-        this.weekThursday = Boolean(dataObject.weekThursday)
-        this.weekFriday = Boolean(dataObject.weekFriday)
-        this.weekSaturday = Boolean(dataObject.weekSaturday)
-        this.monthOrdinal = String(dataObject.monthOrdinal)
-        this.monthWeekday = String(dataObject.monthWeekday)
-        this.stopType = String(dataObject.stopType)
-        this.stopDate = String(dataObject.stopDate)
-        this.stopNumber = Number(dataObject.stopNumber)
-    }
 
     /* getString **************************************************************************************************************************
         Returns a human readable string representing the recurrence. 
@@ -176,8 +82,11 @@ export class Recurrence {
             if (this.intervalNumber > 1) {
                 recurrenceString += `Every ${this.intervalNumber} ${this.interval}s`
             }
-            if (this.interval == 'week'){
-                var weekArray = this.getWeekStringArray()
+            if (this.interval == 'Week'){
+                var weekArray = []
+                for (var weekDay in this.getEnabledWeekdaysInt()){
+                    weekArray.push(this.weekdayArray[weekDay])
+                }
                 if (weekArray.length == 1){
                     recurrenceString += ` on ${weekArray.pop()}`
                 } else if (weekArray.length == 2){
@@ -186,9 +95,8 @@ export class Recurrence {
                     var lastDay = weekArray.pop()
                     recurrenceString += ` on ${weekArray.join(', ')} and ${lastDay}`
                 }
-            } else if (this.interval == 'month' && this.monthOrdinal != '' && this.monthWeekday != '') {
-                var capitalizedMonthWeekday = this.monthWeekday[0].toUpperCase() + this.monthWeekday.slice(1)
-                recurrenceString += ` on the ${this.monthOrdinal} ${capitalizedMonthWeekday}`;
+            } else if (this.interval == 'Month' && this.monthOrdinal != '' && this.monthWeekday != '') {
+                recurrenceString += ` on the ${this.monthOrdinal.toLowerCase()} ${this.monthWeekday}`;
             }
         } else {
             recurrenceString = "Never"
@@ -217,95 +125,167 @@ export class Recurrence {
         * sorts the list and then chooses the soonest date that comes after the initial date
     */
     public getNextDate(initialDate){
-        var nextDate = new Date(initialDate.getTime());                                     // Create next date from initial date    
         if (this.enabled){                                                                  // Only return dates if recurrence enabled
-            if (this.interval == 'minute') {                                                // If interval is minute
+            var nextDate = new Date(initialDate.getTime());                                 // Create next date from initial date    
+            if (this.interval == 'Minute') {                                                // If interval is minute
                 nextDate.setMinutes(initialDate.getMinutes() + this.intervalNumber)         // Increment next date by number of minutes
-            } else if (this.interval == 'hour') {                                           // If interval is hour
+            } else if (this.interval == 'Hour') {                                           // If interval is hour
                 nextDate.setHours(initialDate.getHours() + this.intervalNumber)             // Increment next date by number of hours
-            } else if (this.interval == 'day') {                                            // If interval is day
+            } else if (this.interval == 'Day') {                                            // If interval is day
                 nextDate.setDate(initialDate.getDate() + this.intervalNumber)               // Increment next date by number of days
-            } else if (this.interval == 'week') {                                           // If interval is week
+            } else if (this.interval == 'Week') {                                           // If interval is week
                 nextDate.setDate(nextDate.getDate() + this.intervalNumber * 7)              // Increment next date by number of weeks
-                var enabledWeekdays = this.getWeekIntegerArray()                            // Get weekdays that are enabled if any
-                if (enabledWeekdays.length > 0){                                            // If at least one weekday is enabled
+                if (this.getEnabledWeekdaysInt.length > 0){                                 // If at least one weekday is enabled
                     var validWeekdays = []                                                  // Create list of valid weekdays
                     for (var date of [initialDate, nextDate]){                              // for each week in the initial week and the incremented week...
-                        for (var weekday of enabledWeekdays){                               // for every enabled weekday
-                            var weekdayDate = new Date(date.getTime())                      // create a new weekday date representing the enabled weekday
-                            weekdayDate.setDate(date.getDate() - date.getDay() + weekday)   // set the weekday date to the enabled weekday of the week in question
-                            if (weekdayDate > initialDate){                                 // If the weekday is after the initial date
-                                validWeekdays.push(weekdayDate)                             // Add it to the valid weekdays array
-                            }
+                        validWeekdays.concat(this.getEnabledWeekdays(date))
+                    }
+                    for (var date of validWeekdays){
+                        if (date > initialDate){    
+                            nextDate.setDate(validWeekdays.shift().getDate())                       // Set the next date to the soonest valid weekday
+                        }                                        // If the weekday is after the initial date
+                    }
+                }
+            } else if (this.interval == 'Month') {
+                nextDate.setMonth(initialDate.getMonth() + this.intervalNumber)
+                if (this.monthOrdinal != "" && this.monthWeekday != ""){
+                    var validMonthDates = []
+                    for (var date of [initialDate, nextDate]){
+                        var monthWeekday = new Date(this.getMonthWeekday(date))
+                        if (monthWeekday > initialDate){
+                            validMonthDates.push(monthWeekday)
                         }
                     }
-                    nextDate.setDate(validWeekdays.shift().getDate())                       // Set the next date to the soonest valid weekday
+                    nextDate.setDate(validMonthDates.shift().getDate()) 
                 }
-            } else if (this.interval == 'month') {
-                /**
-                 *             if self.enabled and initial_date <= arrow.now():
-                if self.interval == 'week' and self.weekdays.arrow_set:
-                    new_date = self.weekdays.get_next_date(initial_date, self.intervalnumber)
-                    def generate_valid_weekdays():
-                    for month in initial_date, initial_date.shift(months=intervalnumber):
-                        month_start = month.floor('month')
-                        month_end = month.ceil('month')
-                        weekdays_in_this_month = [
-                            day for day in month.range('day', month_start, month_end) if day.weekday() == self.weekday]
-                        specific_weekday = weekdays_in_this_month[self.ordinal]
-                        yield specific_weekday
-                for weekday in sorted(list(generate_valid_weekdays())):
-                    if weekday > initial_date:
-                        return weekday.replace(hour=initial_date.hour, minute=initial_date.minute, second=initial_date.second)
-            
-
-                elif (
-                        self.interval == 'month') and (
-                        self.weekday_of_month.weekday is not None) and (
-                        self.weekday_of_month.ordinal is not None):
-                    new_date = self.weekday_of_month.get_next_date(initial_date, self.intervalnumber)
-
-                 */
-
-            } else if (this.interval == 'year') {
+            } else if (this.interval == 'Year') {
 
             }
             return nextDate;
         }
     }
 
-    
-        
-
-
-    //Class that represents the specific weekday of the month the task will repeat on (eg, first sunday, last friday)
-   /*
-    
-            # Stops task from repeating if necessary or updates the stop repeating resources
-            if self.stop_info.should_stop():
-                self.enabled = False
-                self.stop_info.type = 'never'
-            else:
-                self.stop_info.update_number()
-    
-
-   def should_stop(self):
-        """Returns boolean representing whether a task should stop repeating"""
-        stop_date_passed = self.type == 'date' and self.date and self.date <= arrow.now()
-        stop_number_reached = self.type == 'number' and isinstance(self.number, int) and int(self.number) <= 1
-        return True if stop_date_passed or stop_number_reached else False
-
-    def update_number(self):
-        if self.type == 'number' and self.number > 1:
-            self.number -= 1
+    /* updateStopStatus *******************************************************************************************************************
+        Stops task from repeating if necessary or updates the stop repeating resources
     */
+    public updateStopStatus(currentDate){
+        if (this.stopType == 'date' && new Date(this.stopDate) < currentDate){
+            this.enabled = false
+        } else if (this.stopType == 'number'){
+            if (this.stopNumber <= 1){
+                this.enabled == false
+            } else {
+                this.stopNumber = this.stopNumber - 1
+            }
+        }
+    }
 
+    /* Private constants *****************************************************************************************************************/
+    private weekdayArray = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    private ordinalArray = ['first', 'second', 'third', 'fourth', 'last']
 
-    /*
+    /* getEnabledWeekdays *****************************************************************************************************************
+        Returns an array of all the enabled weekdays for the current week of a given date.  
+    */
+    private getEnabledWeekdays(date){
+        var enabledWeekdays = []                                        // Initialize array for enabled Weekdays
+        for (var weekday of this.getEnabledWeekdaysInt()) {             // for every enabled weekday
+            date.setDate(date.getDate() - date.getDay() + weekday)      // set the weekday date to the enabled weekday of the week in question
+            enabledWeekdays.push(new Date(date))                        // Add it to the enabled weekdays array
+        }
+        return enabledWeekdays                                          // Return the enabled weekdays array
+    }
 
-    @property
-        */
+    /* getEnabledWeekdaysInt **************************************************************************************************************
+        Returns an array of integers ranging from 0-6 representing the enabled days. 0=Mon, 1=Tue...5=Sat, 6=Sun
+    */
+    private getEnabledWeekdaysInt(){
+        var weekArray = []                                              // Create week array
+        if (this.weekSunday == true) {weekArray.push(0)}                // If sunday enabled add 0 to array
+        if (this.weekMonday == true) {weekArray.push(1)}                // If monday enabled add 1 to array
+        if (this.weekTuesday == true) {weekArray.push(2)}               // If tuesday enabled add 2 to array
+        if (this.weekWednesday == true) {weekArray.push(3)}             // If wednesday enabled, add 3 to array
+        if (this.weekThursday == true) {weekArray.push(4)}              // If thursday enabled add 4 to array
+        if (this.weekFriday == true) {weekArray.push(5)}                // If friday enabled add 5 to array
+        if (this.weekSaturday == true) {weekArray.push(6)}              // If saturday enabled add 6 to array
+        return weekArray                                                // Return the array
+    } 
 
+    /* getMonthWeekday ********************************************************************************************************************
+        Gets the nth weekday of the month of the given date according to the monthOrdinal and monthWeekday variables
+        It does this by compiling a list of matching weekdays in the given month, eg all the thursdays in this month
+        Next it then gets the nth weekday of the list, determined by the monthOrdinal, eg. the second thursday of the month
+    */
+    private getMonthWeekday(date: Date){
+        var ordinal = this.ordinalArray.indexOf(this.monthOrdinal)      // Get the month ordinal as integer    
+        var weekday = this.weekdayArray.indexOf(this.monthWeekday)      // Get the month weekday as integer
+        var currentMonth = date.getMonth()                              // Save the current month for while loop check
+        var weekdays = [];                                              // Create array for matching weekdays
+        date.setDate(1)                                                 // Go to Beginning of the Week
+        while (date.getMonth() === currentMonth) {                      // While still in current month...
+            if (date.getDay() == weekday){                              // If this day matches the month weekday...
+                weekdays.push(new Date(date));                          // Add this day to the weekday list
+            }
+            date.setDate(date.getDate() + 1);                           // go to the next day
+        }
+        if (ordinal == 4){                                              // If month ordinal is last
+            return weekdays.pop()                                       // Return last weekday
+        } else {                                                        // else
+            return weekdays[ordinal]                                    // Return the nth weekday
+        }
+    }
+
+    /* toJSON *****************************************************************************************************************************
+        Save recurrence data as a json string
+    */
+    public toJSON(){
+        return JSON.stringify({                                         // Returns a json string of an object containing...
+            enabled: this.enabled,                                      // The enabled status
+            interval: this.interval,                                    // The interval
+            intervalNumber: this.intervalNumber,                        // The intervalNumber
+            weekSunday: this.weekSunday,                                // Sundays status
+            weekMonday: this.weekMonday,                                // Mondays status
+            weekTuesday: this.weekTuesday,                              // Tuesdays status
+            weekWednesday: this.weekWednesday,                          // Wednesdays status
+            weekThursday: this.weekThursday,                            // Thursdays Status
+            weekFriday: this.weekFriday,                                // Fridays Status
+            weekSaturday: this.weekSaturday,                            // Saturdays Status
+            monthOrdinal: this.monthOrdinal,                            // The month ordinal
+            monthWeekday: this.monthWeekday,                            // The month Weekday
+            stopType: this.stopType,                                    // The stop type
+            stopDate: this.stopDate,                                    // The stop date
+            stopNumber: this.stopNumber                                 // The stop Number
+        })
+    }
+
+    /* fromJSON ***************************************************************************************************************************
+        Loads Recurrence data from a JSON string
+    */
+    public fromJSON(JSONstring: string){
+        var dataObject = JSON.parse(JSONstring)                         // Parse the JSON string into a data object
+        this.enabled = Boolean(dataObject.enabled)                      // Save enabled status
+        this.intervalNumber = Number(dataObject.intervalNumber)         // Save interval number
+        this.interval = String(dataObject.interval);                    // Save interval
+        this.weekSunday = Boolean(dataObject.weekSunday)                // Save Sunday status
+        this.weekMonday = Boolean(dataObject.weekMonday)                // Save Monday status
+        this.weekTuesday = Boolean(dataObject.weekTuesday)              // Save Tuesday status
+        this.weekWednesday = Boolean(dataObject.weekWednesday)          // Save Wednesday status
+        this.weekThursday = Boolean(dataObject.weekThursday)            // Save Thursday status
+        this.weekFriday = Boolean(dataObject.weekFriday)                // Save Friday status
+        this.weekSaturday = Boolean(dataObject.weekSaturday)            // Save Saturday Status
+        this.monthOrdinal = String(dataObject.monthOrdinal)             // Save month ordinal
+        this.monthWeekday = String(dataObject.monthWeekday)             // Save Month Weekday
+        this.stopType = String(dataObject.stopType)                     // Save Stop Type
+        this.stopDate = String(dataObject.stopDate)                     // Save Stop Date
+        this.stopNumber = Number(dataObject.stopNumber)                 // Save Stop Number
+    }
 }
 
 
+/* capitalize *************************************************************************************************************************
+    Capitalizes the first letter of a given word
+    Based on https://stackoverflow.com/a/49298340
+*/
+function capitalize(word: string) {
+    return word[0].toUpperCase() + word.substr(1).toLowerCase()         // Capitalize the first letter and lowercase the rest, concatenate then return
+}
