@@ -6,5 +6,5 @@ import { main } from './Logic/core';
     Registers the plugin with joplin.
 */
 joplin.plugins.register({                                               // calls the register function
-    onStart: async function() { main() },                               // Sets the onStart function to main
+    onStart: main,                                                      // Sets the onStart function to main
 });

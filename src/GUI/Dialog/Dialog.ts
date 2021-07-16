@@ -1,6 +1,5 @@
 // Imports ########################################################################################
 import joplin from 'api';
-import { DialogResult } from 'api/types';
 import { Recurrence } from '../../Logic/recurrence';
 
 export async function createDialog(){
@@ -16,13 +15,13 @@ export async function openDialog(dialog, recurrenceData){
     return await getRecurrence(formResult)
 }
 
-export async function setRecurrence(dialogHandle, recurrenceData:Recurrence){
+async function setRecurrence(dialogHandle, recurrenceData:Recurrence){
     const DialogHTML = await require('./Dialog.html').default;
     var replacedHTML = DialogHTML.replace("RECURRENCE_DATA", btoa(recurrenceData.toJSON()))
     await joplin.views.dialogs.setHtml(dialogHandle, replacedHTML);
 }
 
-export async function getRecurrence(formResult){
+async function getRecurrence(formResult){
     if (formResult.id == 'ok') {
         var encodedRecurrenceData = formResult.formData.recurrenceForm.recurrenceData                   // gets the encoded recurrence data from the hidden form
         var decodedRecurrenceData = atob(encodedRecurrenceData)             // decodes the recurrence data into the json string
