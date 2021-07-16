@@ -118,21 +118,22 @@ export class Recurrence {
 
     public fromJSON(JSONstring){
         var dataObject = JSON.parse(JSONstring)
-        this.enabled = dataObject.enabled
-        this.intervalNumber = dataObject.intervalNumber
-        this.interval = dataObject.interval;
-        this.weekSunday = dataObject.weekSunday
-        this.weekMonday = dataObject.weekMonday
-        this.weekTuesday = dataObject.weekTuesday
-        this.weekWednesday = dataObject.weekWednesday
-        this.weekThursday = dataObject.weekThursday
-        this.weekFriday = dataObject.weekFriday
-        this.weekSaturday = dataObject.weekSaturday
-        this.monthOrdinal = dataObject.monthOrdinal
-        this.monthWeekday = dataObject.monthWeekday
-        this.stopType = dataObject.stopType
-        this.stopDate = dataObject.stopDate
-        this.stopNumber = dataObject.stopNumber
+        console.log(dataObject)
+        this.enabled = Boolean(dataObject.enabled)
+        this.intervalNumber = Number(dataObject.intervalNumber)
+        this.interval = String(dataObject.interval);
+        this.weekSunday = Boolean(dataObject.weekSunday)
+        this.weekMonday = Boolean(dataObject.weekMonday)
+        this.weekTuesday = Boolean(dataObject.weekTuesday)
+        this.weekWednesday = Boolean(dataObject.weekWednesday)
+        this.weekThursday = Boolean(dataObject.weekThursday)
+        this.weekFriday = Boolean(dataObject.weekFriday)
+        this.weekSaturday = Boolean(dataObject.weekSaturday)
+        this.monthOrdinal = String(dataObject.monthOrdinal)
+        this.monthWeekday = String(dataObject.monthWeekday)
+        this.stopType = String(dataObject.stopType)
+        this.stopDate = String(dataObject.stopDate)
+        this.stopNumber = Number(dataObject.stopNumber)
     }
 
     /* getString **************************************************************************************************************************
@@ -195,16 +196,15 @@ export class Recurrence {
         * Add the 2 correct weekdays to a final list
         * sorts the list and then chooses the soonest date that comes after the initial date
     */
-    public getNextDate(initialDate: Date){
-        var nextDate = null
-        
+    public getNextDate(initialDate){
+        var nextDate = new Date(initialDate.getTime());
         if (this.enabled){
             if (this.interval == 'minute') {
-                nextDate = initialDate.setMinutes(initialDate.getMinutes() + this.intervalNumber)
+                nextDate.setMinutes(initialDate.getMinutes() + this.intervalNumber)
             } else if (this.interval == 'hour') {
-                nextDate = initialDate.setHours(initialDate.getHours() + this.intervalNumber)
+                nextDate.setHours(initialDate.getHours() + this.intervalNumber)
             } else if (this.interval == 'day') {
-                nextDate = initialDate.setDate(initialDate.getDate() + this.intervalNumber)
+                nextDate.setDate(initialDate.getDate() + this.intervalNumber)
             } else if (this.interval == 'week') {
                 /*let valid_weekdays = []       
                 valid_weekdays = [];
@@ -253,6 +253,7 @@ export class Recurrence {
 
             }
         }
+        return nextDate;
     }
 
     
