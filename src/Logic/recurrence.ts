@@ -92,7 +92,29 @@ export class Recurrence {
         /*
         Returns a set of integers ranging from 0-6 representing the enabled days. 0=Mon, 1=Tue...5=Sat, 6=Sun*/
     //return set([weekday_index for weekday_index, enabled in enumerate(self.dict.values()) if enabled])
-
+        var weekArray = []
+        if (this.weekSunday == true){
+            weekArray.push(0)
+        }
+        if (this.weekMonday == true){
+            weekArray.push(1)
+        }
+        if (this.weekTuesday == true){
+            weekArray.push(2)
+        }
+        if (this.weekWednesday == true){
+            weekArray.push(3)
+        }
+        if (this.weekThursday == true){
+            weekArray.push(4)
+        }
+        if (this.weekFriday == true){
+            weekArray.push(5)
+        }
+        if (this.weekSaturday == true){
+            weekArray.push(6)
+        }
+        return weekArray
     }
 
     public toJSON(){
@@ -118,7 +140,6 @@ export class Recurrence {
 
     public fromJSON(JSONstring){
         var dataObject = JSON.parse(JSONstring)
-        console.log(dataObject)
         this.enabled = Boolean(dataObject.enabled)
         this.intervalNumber = Number(dataObject.intervalNumber)
         this.interval = String(dataObject.interval);
@@ -174,7 +195,6 @@ export class Recurrence {
         return recurrenceString;
     }
 
-
     /* getNextDate ************************************************************************************************************************
         
         Gets the next date and time after the initial date that the task would repeat
@@ -206,23 +226,21 @@ export class Recurrence {
             } else if (this.interval == 'day') {
                 nextDate.setDate(initialDate.getDate() + this.intervalNumber)
             } else if (this.interval == 'week') {
-                /*let valid_weekdays = []       
-                valid_weekdays = [];
-                for (week in [initial_date, addWeeks(initial_date, intervalnumber)]){
-                    week_start = startOfWeek(week);
-                    for weekday_number in self.arrow_set:
-                        valid_weekday = week_start.shift(weekday=weekday_number)
-                    yield valid_weekday
+                nextDate.setDate(nextDate.getDate() + this.intervalNumber * 7)
+                var enabledWeekdays = this.getWeekIntegerArray()
+                if (enabledWeekdays.length > 0){
+                    var validWeekdays = []
+                    for (var date of [initialDate, nextDate]){
+                        for (var weekday of enabledWeekdays){
+                            var copiedDate = new Date(date)
+                            var weekdayDate = new Date(copiedDate.setDate(copiedDate.getDate() - copiedDate.getDay() + weekday))
+                            if (weekdayDate > initialDate){
+                                validWeekdays.push(weekdayDate)
+                            }
+                        }
+                    }
+                    nextDate = validWeekdays.shift()
                 }
-                def generate_valid_weekdays():
-                    for week in [initial_date, initial_date.shift(weeks=intervalnumber)]:
-                        week_start = week.floor('week').shift(days=-1)
-                        for weekday_number in self.arrow_set:
-                            valid_weekday = week_start.shift(weekday=weekday_number)
-                            yield valid_weekday
-                for weekday in sorted(list(generate_valid_weekdays())):
-                    if weekday > initial_date:
-                        return weekday.replace(hour=initial_date.hour, minute=initial_date.minute, second=initial_date.second)*/
             } else if (this.interval == 'month') {
                 /**
                  *             if self.enabled and initial_date <= arrow.now():
