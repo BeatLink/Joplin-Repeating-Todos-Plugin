@@ -16,6 +16,7 @@ export async function onRecurrenceDialogButtonClicked(){
     var oldRecurrence = await getRecord(database, selectedNoteID)      // Get recurrence data for current note
     var newRecurrence = await openDialog(dialog, oldRecurrence);
     console.log(newRecurrence.getString())
+    console.log(newRecurrence)
     var currentDate = new Date()
     console.log(currentDate.toString())
     console.log(newRecurrence.getNextDate(currentDate).toString())
