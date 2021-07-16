@@ -1,11 +1,3 @@
-/*********************************************************** READ ME **********************************************************************
-
-    The recurrence logic contained in this file started out as a part of an old python todo app project of mine, this most of this code
-    is in the python syntax and would need to be ported to typescript equivalents before it will be functional. Do not use any file with
-    this notice.
-
-******************************************************************************************************************************************/
-
 /* Recurrence *****************************************************************************************************************************
 
     Handles all matters relating to tasks that repeat on a periodical basis
@@ -48,18 +40,18 @@ export class Recurrence {
     enabled = false;                                                    // Indicates whether task recurrs or not
     interval = 'minute';                                                // Interval between recurrences 
     intervalNumber = 1;                                                 // Number of intervals between recurrences, eg every 5 minutes or every 2 days. 
-    weekSunday = false;                                                // True if task is to be done on Sunday
-    weekMonday = false;                                                // True if task is to be done on Monday
-    weekTuesday = false;                                               // True if task is to be done on Tuesday
-    weekWednesday = false;                                             // True if task is to be done on Wednesday
-    weekThursday = false;                                              // True if task is to be done on Thursday
-    weekFriday = false;                                                // True if task is to be done on Friday
-    weekSaturday = false;                                              // True if task is to be done on Saturday
-    monthOrdinal = 'first';                                                 // The position of the weekday of the month a monthly task should repeat on
-    monthWeekday = '';                                                 // The weekday of the month a monthly task should recur on
-    stopType = 'never'                                                 // Indicates the stop criteria. 
-    stopDate = null                                                    // The date the task should stop repeating.
-    stopNumber = 1                                                     // The number of times a task should repeat.
+    weekSunday = false;                                                 // True if task is to be done on Sunday
+    weekMonday = false;                                                 // True if task is to be done on Monday
+    weekTuesday = false;                                                // True if task is to be done on Tuesday
+    weekWednesday = false;                                              // True if task is to be done on Wednesday
+    weekThursday = false;                                               // True if task is to be done on Thursday
+    weekFriday = false;                                                 // True if task is to be done on Friday
+    weekSaturday = false;                                               // True if task is to be done on Saturday
+    monthOrdinal = 'first';                                             // The position of the weekday of the month a monthly task should repeat on
+    monthWeekday = '';                                                  // The weekday of the month a monthly task should recur on
+    stopType = 'never'                                                  // Indicates the stop criteria. 
+    stopDate = null                                                     // The date the task should stop repeating.
+    stopNumber = 1                                                      // The number of times a task should repeat.
 
 
     /* getString **************************************************************************************************************************
@@ -73,34 +65,34 @@ export class Recurrence {
         Example 7: Never
     */
     public getString(){
-        var recurrenceString = ""
-        if (this.enabled) {
-            if (this.intervalNumber == 1) {
-                recurrenceString += `Every ${this.interval}`
+        var recurrenceString = ""                                       // Initialize recurrence string to blank string
+        if (this.enabled) {                                             // If recurrence is enabled
+            if (this.intervalNumber == 1) {                             // If interval number is 1
+                recurrenceString += `Every ${this.interval}`            // add every interval
             }
-            if (this.intervalNumber > 1) {
-                recurrenceString += `Every ${this.intervalNumber} ${this.interval}s`
+            if (this.intervalNumber > 1) {                              // If interval number is greater than 1
+                recurrenceString += `Every ${this.intervalNumber} ${this.interval}s`    // Add number of intervals and pluralzie interval
             }
-            if (this.interval == 'Week'){
-                var weekArray = []
-                for (var weekDay in this.getWeekdaysInt()){
-                    weekArray.push(this.weekdayArray[weekDay])
+            if (this.interval == 'Week'){                               // If interval is week
+                var weekArray = []                                      // create a weekdays array
+                for (var weekDay in this.getWeekdaysInt()){             // for weekday in enabled weekdays
+                    weekArray.push(capitalize(this.weekdayArray[weekDay]))  // add the capitalized weekday string to the array
                 }
-                if (weekArray.length == 1){
-                    recurrenceString += ` on ${weekArray.pop()}`
-                } else if (weekArray.length == 2){
-                    recurrenceString += ` on ${weekArray.shift()} and ${weekArray.shift()}`
-                } else if (weekArray.length > 2){
-                    var lastDay = weekArray.pop()
-                    recurrenceString += ` on ${weekArray.join(', ')} and ${lastDay}`
+                if (weekArray.length == 1){                             // if the weekday array length is exactly one
+                    recurrenceString += ` on ${weekArray.pop()}`        // add on weekday
+                } else if (weekArray.length == 2){                      // if weekday array length is exactly two
+                    recurrenceString += ` on ${weekArray.shift()} and ${weekArray.shift()}` // add both weekdays seperated by and
+                } else if (weekArray.length > 2){                       // if weekday array greater than two
+                    var lastDay = weekArray.pop()                       // save last day in variable
+                    recurrenceString += ` on ${weekArray.join(', ')} and ${lastDay}`    // add weekdays string seperated by commas and last day appended with and
                 }
-            } else if (this.interval == 'Month' && this.monthOrdinal != '' && this.monthWeekday != '') {
-                recurrenceString += ` on the ${this.monthOrdinal.toLowerCase()} ${this.monthWeekday}`;
+            } else if (this.interval == 'Month' && this.monthOrdinal != '' && this.monthWeekday != '') {    // if interval is month and month weekday is set
+                recurrenceString += ` on the ${this.monthOrdinal} ${capitalize(this.monthWeekday)}`;    // add month weekday to string
             }
-        } else {
-            recurrenceString = "Never"
+        } else {                                                        // Else (recurrence not enabled)
+            recurrenceString = "Never"                                  // Set string to never
         }
-        return recurrenceString;
+        return recurrenceString;                                        // Return the string
     }
 
     /* getNextDate ************************************************************************************************************************        
@@ -133,38 +125,36 @@ export class Recurrence {
                 nextDate.setDate(initialDate.getDate() + this.intervalNumber)               // Increment next date by number of days
             } else if (this.interval == 'week') {                                           // If interval is week
                 nextDate.setDate(nextDate.getDate() + this.intervalNumber * 7)              // Increment next date by number of weeks
-                if (this.getWeekdaysInt().length > 0){                                 // If at least one weekday is enabled
-                    console.log(initialDate)
-                    console.log(nextDate)
-                    var initialWeekdays = this.getWeekdays(initialDate)
-                    var nextWeekdays = this.getWeekdays(nextDate)
-                    var validWeekdays = initialWeekdays.concat(nextWeekdays)
-                    validWeekdays.sort((a,b)=>{return a.getTime()-b.getTime()})
-                    for (var weekDate of validWeekdays){
-                        if (weekDate.getTime() > initialDate.getTime()){    
-                            nextDate.setTime(weekDate.getTime())                       // Set the next date to the soonest valid weekday
-                            break
-                        }                                        // If the weekday is after the initial date
-                    }
-                }
-            } else if (this.interval == 'month') {
-                nextDate.setMonth(initialDate.getMonth() + this.intervalNumber)
-                if (this.monthOrdinal != "" && this.monthWeekday != ""){
-                    var initialMonthDate = new Date(this.getMonthWeekday(initialDate))
-                    var nextMonthDate = new Date(this.getMonthWeekday(nextDate))
-                    var validMonthDates = [initialMonthDate, nextMonthDate]
-                    validMonthDates.sort((a,b)=>{return a.getTime()-b.getTime()})
-                    for (var monthDate of validMonthDates){
-                        if (monthDate > initialDate){
-                            nextDate.setTime(monthDate.getTime()) 
-                            break
+                if (this.getWeekdaysInt().length > 0){                                      // If at least one weekday is enabled
+                    var initialWeekdays = this.getWeekdays(initialDate)                     // Get valid weekdays for initial week
+                    var nextWeekdays = this.getWeekdays(nextDate)                           // Get valid weekdays for next week
+                    var validWeekdays = initialWeekdays.concat(nextWeekdays)                // combine valid weekdays of initial and next week
+                    validWeekdays.sort((a,b)=>{return a.getTime()-b.getTime()})             // Sort the weekdays from earliest to latest
+                    for (var weekDate of validWeekdays){                                    // for weekday of valid weekdays
+                        if (weekDate.getTime() > initialDate.getTime()){                    // if weekday is after initial date
+                            nextDate.setTime(weekDate.getTime())                            // Set the next date weekday
+                            break                                                           // break the for loop
                         }
                     }
                 }
-            } else if (this.interval == 'year') {
-                nextDate.setFullYear(initialDate.getFullYear() + this.intervalNumber)
+            } else if (this.interval == 'month') {                                          // If interval is month
+                nextDate.setMonth(initialDate.getMonth() + this.intervalNumber)             // Increment next date to number of months
+                if (this.monthOrdinal != "" && this.monthWeekday != ""){                    // If month ordinal and month weekday is present
+                    var initialMonthDate = new Date(this.getMonthWeekday(initialDate))      // Get month weekday for initial month
+                    var nextMonthDate = new Date(this.getMonthWeekday(nextDate))            // Get month weekday for next month
+                    var validMonthDates = [initialMonthDate, nextMonthDate]                 // create array with both month weekdays
+                    validMonthDates.sort((a,b)=>{return a.getTime()-b.getTime()})           // sort the month weekdays from earliest to latest
+                    for (var monthDate of validMonthDates){                                 // for month weekday in array
+                        if (monthDate > initialDate){                                       // if weekday is after initial date
+                            nextDate.setTime(monthDate.getTime())                           // set the next date
+                            break                                                           // break the for loop
+                        }
+                    }
+                }
+            } else if (this.interval == 'year') {                                           // if the interval is year
+                nextDate.setFullYear(initialDate.getFullYear() + this.intervalNumber)       // increment the next date by number of years
             }
-            return nextDate;
+            return nextDate;                                                                // Return the next date
         }
     }
 
@@ -181,7 +171,7 @@ export class Recurrence {
             }   
         } else if (this.stopType == 'number'){                          // If stop type is number...
             if (this.stopNumber <= 1){                                  // And stop number is less than or 1...
-                this.enabled == false                                   // Disable recurrence
+                this.enabled = false                                   // Disable recurrence
             } else {                                                    // Else...
                 this.stopNumber = this.stopNumber - 1                   // decrement stop number by 1
             }
@@ -196,12 +186,11 @@ export class Recurrence {
         Returns an array of all the enabled weekdays for the current week of a given date.  
     */
     private getWeekdays(date){
-        console.log(date)
         var enabledWeekdays = []                                        // Initialize array for enabled Weekdays
-        for (var weekday of this.getWeekdaysInt()) {             // for every enabled weekday
-            var newDate = new Date(date)
-            newDate.setDate(newDate.getDate() - newDate.getDay() + weekday)      // set the weekday date to the enabled weekday of the week in question
-            enabledWeekdays.push(newDate)                        // Add it to the enabled weekdays array
+        for (var weekday of this.getWeekdaysInt()) {                    // for every enabled weekday
+            var newDate = new Date(date)                                // Create New date for manipulation
+            newDate.setDate(newDate.getDate() - newDate.getDay() + weekday) // set the weekday date to the enabled weekday of the week in question
+            enabledWeekdays.push(newDate)                               // Add it to the enabled weekdays array
         }
         return enabledWeekdays                                          // Return the enabled weekdays array
     }
@@ -218,7 +207,6 @@ export class Recurrence {
         if (this.weekThursday == true) {weekArray.push(4)}              // If thursday enabled add 4 to array
         if (this.weekFriday == true) {weekArray.push(5)}                // If friday enabled add 5 to array
         if (this.weekSaturday == true) {weekArray.push(6)}              // If saturday enabled add 6 to array
-        console.log(weekArray)
         return weekArray                                                // Return the array
 
     } 
@@ -232,14 +220,14 @@ export class Recurrence {
         var ordinal = this.ordinalArray.indexOf(this.monthOrdinal)      // Get the month ordinal as integer    
         var weekday = this.weekdayArray.indexOf(this.monthWeekday)      // Get the month weekday as integer
         var weekdays = [];                                              // Create array for matching weekdays
-        var startDate = new Date(date)
-        var currentMonth = startDate.getMonth()                              // Save the current month for while loop check
+        var startDate = new Date(date)                                  // Create a new date for manipulation
+        var currentMonth = startDate.getMonth()                         // Save the current month for while loop check
         startDate.setDate(1)                                            // Go to Beginning of the Week
-        while (startDate.getMonth() === currentMonth) {                      // While still in current month...
-            if (startDate.getDay() == weekday){                              // If this day matches the month weekday...
-                weekdays.push(new Date(startDate));                          // Add this day to the weekday list
+        while (startDate.getMonth() === currentMonth) {                 // While still in current month...
+            if (startDate.getDay() == weekday){                         // If this day matches the month weekday...
+                weekdays.push(new Date(startDate));                     // Add this day to the weekday list
             }
-            startDate.setDate(startDate.getDate() + 1);                           // go to the next day
+            startDate.setDate(startDate.getDate() + 1);                 // go to the next day
         }
         if (ordinal == 4){                                              // If month ordinal is last
             return weekdays.pop()                                       // Return last weekday

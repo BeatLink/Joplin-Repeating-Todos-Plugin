@@ -20,6 +20,7 @@ export async function onRecurrenceDialogButtonClicked(){
     var currentDate = new Date()
     console.log(currentDate.toString())
     console.log(newRecurrence.getNextDate(currentDate).toString())
+    console.log(newRecurrence.updateStopStatus())
     if (newRecurrence){
         await updateRecord(database, selectedNoteID, newRecurrence)
     }
