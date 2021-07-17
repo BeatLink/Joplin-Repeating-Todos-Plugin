@@ -13,6 +13,8 @@ import { getAllNotes, getNote } from "./joplin";
 const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
 
+var database = null
+
 /* setupDatabase **************************************************************************************************************************
     Runs the code required for database initialization and record updates. This should run at  program start. 
 */
@@ -20,16 +22,18 @@ export async function setupDatabase(){
     const pluginDir = await joplin.plugins.dataDir();                   // Get Plugin Folder
     await fs.ensureDir(pluginDir)                                       // Create Plugin Folder if it doesnt exist
     const databasePath = pluginDir + "/database.sqlite3";               // Set database path
-    var database = new sqlite3.Database(databasePath);                  // Create or open database
-    await createRecurrenceTable(database);                              // Create database table if it doesnt exist
-    await updateDatabase(database);                                     // Synchronizes the recurrence database with the joplin state
+    database = new sqlite3.Database(databasePath);                  // Create or open database
+    await createRecurrenceTable();                              // Create database table if it doesnt exist
+    await updateDatabase();                                     // Synchronizes the recurrence database with the joplin state
+    await connectUpdateHandler()
+
     return database;                                                    // Returns the database
 }
 
 /* Create Table ***************************************************************************************************************************
     Creates the database table if it doesnt exist
 */
-async function createRecurrenceTable(database){
+async function createRecurrenceTable(){
     var createQuery = `
         CREATE TABLE IF NOT EXISTS Recurrence (
             id TEXT PRIMARY KEY, 
@@ -50,7 +54,20 @@ async function createRecurrenceTable(database){
             stopNumber INTEGER
         )
     `                                                                   // SQL Query
-    runQuery(database, 'run', createQuery, {})                          // Run database create table command 
+    runQuery('run', createQuery, {})                          // Run database create table command 
+}
+
+async function connectUpdateHandler(){
+    await joplin.workspace.onNoteChange(noteUpdateHandler)
+}
+
+async function noteUpdateHandler(eventObject){
+    console.log(eventObject)
+    if (eventObject.event == 1){
+        await createRecord(eventObject.id, new Recurrence())     // Add blank recurrence object to database
+    } else if (eventObject.event == 3) {
+        await deleteRecord(eventObject.id)
+    }
 }
 
 /* updateDatabase *************************************************************************************************************************
@@ -59,15 +76,15 @@ async function createRecurrenceTable(database){
         2) Deleting recurrence records from the database if it doesnt have a corresponding note in joplin
     This function should be run at program startup
 */
-async function updateDatabase(database){
+async function updateDatabase(){
     for (var note of await getAllNotes()){                              // For note in all notes
-        if (!await getRecord(database, note.id)){                       // If note id is not in recurrence database
-            await createRecord(database, note.id, new Recurrence())     // Add blank recurrence object to database
+        if (!await getRecord(note.id)){                       // If note id is not in recurrence database
+            await createRecord(note.id, new Recurrence())     // Add blank recurrence object to database
         }
     }
-    for (var record of await getAllRecords(database)){                  // For recurrence record in recurrence database
+    for (var record of await getAllRecords()){                  // For recurrence record in recurrence database
         if (!await getNote(record.id)){                                 // If corresponding record id not in notes
-            await deleteRecord(database, record.id)                     // delete record
+            await deleteRecord(record.id)                     // delete record
         }
     }
 }
@@ -75,10 +92,10 @@ async function updateDatabase(database){
 /* getallDatabaseRecords ******************************************************************************************************************
     This is a helper function that gets a recurrence record from the database for the corresponding note ID. 
 */
-async function getAllRecords(database){
+async function getAllRecords(){
     var records: Array<any> = null;                                     // Initializes the database records variable
     var selectQuery = `SELECT * FROM Recurrence`                        // SQL Query to select all records
-    records = await runQuery(database, 'all', selectQuery, {});         // runs the query and saves the result to the variable
+    records = await runQuery('all', selectQuery, {});         // runs the query and saves the result to the variable
     var recurrences = []                                                // Create final recurrence array
     for (var record of records){                                        // for each record in the returned records
         recurrences.push({                                              // Push to the recurrences array an object consisting of
@@ -94,11 +111,11 @@ async function getAllRecords(database){
     Note that sqlite3 is not compatible with async/await functionality, thus the need for the query to be written as a promise. If there 
     are better ways to do this, please let me know
 */
-export async function getRecord(database, id): Promise<Recurrence>{
+export async function getRecord(id): Promise<Recurrence>{
     var record: any = null;                                             // Initialize database record variable
     var selectQuery = `SELECT * FROM Recurrence WHERE id = $id`         // Create SQL Query for the command
     var selectParam = {$id: id}                                         // Create SQL Parameters for command
-    record = await runQuery(database, 'get', selectQuery, selectParam)  // Runs the query and saves the result to the variable
+    record = await runQuery('get', selectQuery, selectParam)  // Runs the query and saves the result to the variable
     return record != undefined ? getRecordAsRecurrence(record) : null   // Returns record as recurrence if it exists, otherwise null
 }
 
@@ -106,17 +123,17 @@ export async function getRecord(database, id): Promise<Recurrence>{
     This is a helper function that creates a new recurrence record in the recurrence database when given the noteID and recurrence data 
     object.
 */
-async function createRecord(database, id: string, recurrence:Recurrence){
+async function createRecord(id: string, recurrence:Recurrence){
     var insertQuery = `INSERT INTO Recurrence (id) VALUES ($id);`       // SQL Query
     var insertParameters = {$id: id}                                    // Parameter
-    await runQuery(database, 'run', insertQuery, insertParameters)      // Run the database insertion command
-    await updateRecord(database, id, recurrence);                       // Runs the database update record command
+    await runQuery('run', insertQuery, insertParameters)      // Run the database insertion command
+    await updateRecord(id, recurrence);                       // Runs the database update record command
 }
 
 /* UpdateDatabaseRecord *******************************************************************************************************************
     This is a helper function that updates a recurrence record in the database when given the noteID and recurrence data object
 */
-export async function updateRecord(database, id: string, recurrence:Recurrence){
+export async function updateRecord(id: string, recurrence:Recurrence){
     var updateQuery = `
         UPDATE Recurrence
         SET
@@ -155,23 +172,23 @@ export async function updateRecord(database, id: string, recurrence:Recurrence){
         $stopDate: recurrence.stopDate,
         $stopNumber: recurrence.stopNumber
     }
-    await runQuery(database, 'run', updateQuery, updateParameters)         // Runs the database update query
+    await runQuery('run', updateQuery, updateParameters)         // Runs the database update query
 }
 
 /* deleteDatabaseRecord *******************************************************************************************************************
     This is a helper function that deletes a recurrence record from the database for the corresponding note ID.
 */
-async function deleteRecord(database, id){
+async function deleteRecord(id){
     var deleteQuery = `DELETE FROM Recurrence WHERE id = $id`           // SQL Query
     var deleteParameters = {$id: id}                                    // Parameters
-    await runQuery(database, 'run', deleteQuery, deleteParameters)      // Run the database run command
+    await runQuery('run', deleteQuery, deleteParameters)      // Run the database run command
 }
 
 /* runDatabaseQuery *********************************************************************************************************************
     Sqlite3 does not support async/await functionality, thus the need for this promise based function to ruin the sqlite functions. 
     If there are better ways to do this, please let me know
 */
-async function runQuery(database, func, SQLQuery, parameters): Promise<any>{
+async function runQuery(func, SQLQuery, parameters): Promise<any>{
     return await new Promise(                                           // Processes the below promise and returns the result
         (resolve, reject) => {                                          // Create the promise function
             const callback = (err, row) => {                            // Creates database callback written as a promise processor
