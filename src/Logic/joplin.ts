@@ -25,3 +25,7 @@ export async function getNote(noteID){
 export async function getSelectedNote(){
     return await joplin.workspace.selectedNote()
 }
+
+export async function markTaskUncompleted(id){
+    await joplin.data.put(['notes', id], null, { todo_completed: 0});
+}
