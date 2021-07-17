@@ -62,7 +62,6 @@ async function connectUpdateHandler(){
 }
 
 async function noteUpdateHandler(eventObject){
-    console.log(eventObject)
     if (eventObject.event == 1){
         await createRecord(eventObject.id, new Recurrence())     // Add blank recurrence object to database
     } else if (eventObject.event == 3) {
