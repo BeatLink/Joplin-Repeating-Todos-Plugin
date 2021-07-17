@@ -4,7 +4,7 @@ import { createDialog, openDialog} from '../GUI/Dialog/Dialog';
 import { setupDialogButton } from '../GUI/DialogButton';
 import { setupDatabase, getRecord, updateRecord } from './database';
 import { getSelectedNote } from './joplin';
-import { setupTaskCompletion } from './completion'
+import { reviewCompletedTasks } from './completion'
 
 
 /* onRecurrenceDialogButtonClicked ******************************************************************************************************
@@ -27,6 +27,5 @@ export async function main() {
     await setupDatabase();                                              // Setup Database
     await createDialog();                                               // Setup Dialog
     await setupDialogButton();                                          // Setup Dialog Button
-    //await setupTaskCompletion()                                         // Setup task completion logic
-    joplin.workspace.onNoteChange(async (event) => await console.log('note changed', event))
+    await reviewCompletedTasks()                                         // Setup task completion logic
 }

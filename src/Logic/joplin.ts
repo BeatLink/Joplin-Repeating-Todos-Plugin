@@ -12,6 +12,19 @@ export async function getAllNotes(){
     return allNotes;
 }
 
+export async function getCompletedNotes(){
+    var completedTodos = [];
+    let pageNum = 0;
+    let morePagesExist = false;
+    console.log('getUncompletedTodos')
+	do {
+		let response = await joplin.data.get(['search'],  {'query': 'iscompleted:1', fields: ['id', 'title', 'body', 'todo_completed'], page: pageNum++})
+        completedTodos = completedTodos.concat(response.items)
+        morePagesExist = response.has_more;
+	} while (morePagesExist)
+    return completedTodos;
+}
+
 export async function getNote(noteID){
     var note = null
     try {
