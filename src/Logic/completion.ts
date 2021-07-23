@@ -11,7 +11,7 @@ export async function reviewCompletedTasks(){
     for (var note of await getCompletedNotes()){                        // For note in completed notes
         await processRecurrence(note)                                   // Process Note
     }
-    setInterval(await reviewCompletedTasks, 30000)                      // Run loop again after 60 seconds    
+    setInterval(await reviewCompletedTasks, 300000)                     // Run loop again after 60 seconds    
 }
 
 /* processRecurrence **********************************************************************************************************************
