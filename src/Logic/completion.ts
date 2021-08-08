@@ -10,8 +10,8 @@ import { getCompletedNotes, markTaskUncompleted } from "./joplin";
 
 export async function reviewCompletedTasks(){
     while (true) {                                                          // Infinite loop
+        await new Promise(r => setTimeout(r, 1 * 1000));                    // Sleep for 1 second
         for (var task of await getCompletedNotes()){                        // For note in completed notes
-            await new Promise(r => setTimeout(r, 2000));                    // Sleep for 1 second
             var recurrence = await getRecord(task.id)                       // Get recurrence data for task
             if (recurrence.enabled){                                        // If recurrence is enabled for the task
                 var initialDate = new Date(task.todo_completed)             // Create initial date from todo completion datetime
