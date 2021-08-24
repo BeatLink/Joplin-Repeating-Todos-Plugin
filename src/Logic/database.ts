@@ -51,7 +51,8 @@ async function createRecurrenceTable(){
             monthWeekday TEXT,
             stopType TEXT,
             stopDate TEXT,
-            stopNumber INTEGER
+            stopNumber INTEGER,
+            nextResetDate TEXT
         )
     `                                                                   // SQL Query
     runQuery('run', createQuery, {})                          // Run database create table command 
@@ -150,7 +151,8 @@ export async function updateRecord(id: string, recurrence:Recurrence){
             monthWeekday = $monthWeekday,
             stopType = $stopType,
             stopDate = $stopDate,
-            stopNumber = $stopNumber
+            stopNumber = $stopNumber,
+            nextResetDate = $nextResetDate
         WHERE id = $id
     `                                                                   // SQL Query
     var updateParameters = {                                            // Parameters
@@ -169,7 +171,8 @@ export async function updateRecord(id: string, recurrence:Recurrence){
         $monthWeekday: recurrence.monthWeekday,
         $stopType: recurrence.stopType,
         $stopDate: recurrence.stopDate,
-        $stopNumber: recurrence.stopNumber
+        $stopNumber: recurrence.stopNumber,
+        $nextResetDate: recurrence.nextResetDate
     }
     await runQuery('run', updateQuery, updateParameters)         // Runs the database update query
 }
@@ -224,6 +227,7 @@ function getRecordAsRecurrence(record): Recurrence{
     recurrence.stopType = record.stopType
     recurrence.stopDate = record.stopDate
     recurrence.stopNumber = record.stopNumber
+    recurrence.nextResetDate = record.nextResetDate
     return recurrence
 }
 

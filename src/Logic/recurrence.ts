@@ -36,6 +36,8 @@
         Valid values for stopNumber are any positive integer (zero and above)
 */
 
+import { tr } from "date-fns/locale";
+
 export class Recurrence {
     enabled = false;                                                    // Indicates whether task recurrs or not
     interval = 'minute';                                                // Interval between recurrences 
@@ -52,6 +54,7 @@ export class Recurrence {
     stopType = 'never'                                                  // Indicates the stop criteria. 
     stopDate = null                                                     // The date the task should stop repeating.
     stopNumber = 1                                                      // The number of times a task should repeat.
+    nextResetDate = null                                                  // The next date and time the task should be done. The task should be marked uncomplete on this date
 
 
     /* getString **************************************************************************************************************************
@@ -158,6 +161,20 @@ export class Recurrence {
         }
     }
 
+    public getFutureDate(initialDate){
+
+        var currentDate = initialDate
+        var now = Date.now()
+        while (true){
+            if (currentDate > now){
+                return currentDate
+            } else {
+                currentDate = this.getNextDate(currentDate)
+            }
+
+        }
+    }
+
     /* updateStopStatus *******************************************************************************************************************
         Stops task from repeating if necessary or updates the stop repeating resources.
         * If the stop type is date and the stop date has passed, disable recurrence
@@ -255,7 +272,8 @@ export class Recurrence {
             monthWeekday: this.monthWeekday,                            // The month Weekday
             stopType: this.stopType,                                    // The stop type
             stopDate: this.stopDate,                                    // The stop date
-            stopNumber: this.stopNumber                                 // The stop Number
+            stopNumber: this.stopNumber,                                 // The stop Number
+            nextResetDate: this. 
         })
     }
 
