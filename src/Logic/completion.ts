@@ -3,6 +3,19 @@ import { getRecord, updateRecord } from "./database";
 import { getCompletedTasks, markTaskUncompleted, setTaskDueDate } from "./joplin";
 
 
+
+/*
+
+Database get task with nearest todo date if task is enabled
+    if due date has passed
+        undo task
+        increment todo date to next date
+    else:
+        set timer to run this function at todo date and exit
+*/
+
+
+
 /* reviewCompletedTasks ********************************************************************************************************************
     Processes completed tasks every 30 for any changes. 
  */

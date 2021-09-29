@@ -18,6 +18,9 @@ Resetting the task
 
 
 
+New Design
+
+
 
 # Joplin Plugin
 
