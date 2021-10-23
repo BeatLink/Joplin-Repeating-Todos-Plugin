@@ -22,7 +22,6 @@ export async function createDialog(){
 export async function openDialog(recurrenceData){
     const DialogHTML = await require('./Dialog.html').default;
     var replacedHTML = DialogHTML.replace("RECURRENCE_DATA", btoa(recurrenceToJSON(recurrenceData)))
-    console.log(recurrenceData)
     await joplin.views.dialogs.setHtml(dialog, replacedHTML);
     var formResult = await joplin.views.dialogs.open(dialog)
     if (formResult.id == 'ok') {
