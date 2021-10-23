@@ -9,7 +9,7 @@ export async function getAllNotes(){
     var allNotes = []
     let pageNum = 0
 	do {
-		var response = await joplin.data.get(['notes'], { fields: ['id'], page: pageNum++})
+		var response = await joplin.data.get(['notes'], { fields: ['id', "todo_due"], page: pageNum++})
         allNotes = allNotes.concat(response.items)
 	} while (response.has_more)
     return allNotes
@@ -20,7 +20,7 @@ export async function getAllNotes(){
  ***************************************************************************************************************************************************/
 export async function getNote(noteID){
     try {
-        return await joplin.data.get(['notes', noteID], { fields: ['id', 'title', 'body', 'todo_due', 'todo_completed']})
+        return await joplin.data.get(['notes', noteID], { fields: ['id', 'todo_due']})
     } catch(error) {
         if (error.message != "Not Found") { 
             throw(error) 
