@@ -47,7 +47,7 @@ async function createTable(){
             monthWeekday TEXT,
             stopType TEXT,
             stopDate TEXT,
-            stopNumber INTEGER,
+            stopNumber INTEGER
         )
     `
     runQuery('run', createQuery, {})
@@ -58,7 +58,7 @@ async function createTable(){
  * Creates a new recurrence record in the recurrence database when given the noteID and recurrence data object.                                     *
  ***************************************************************************************************************************************************/
 export async function createRecord(id: string, recurrence:Recurrence){
-    await runQuery('run', `INSERT INTO Recurrence (id) VALUES ($id);`, {$id: id})
+    await runQuery('run', `INSERT INTO Recurrence (id) VALUES ($id)`, {$id: id})
     await updateRecord(id, recurrence);
 }
 
@@ -103,7 +103,7 @@ export async function updateRecord(id: string, recurrence:Recurrence){
             monthWeekday = $monthWeekday,
             stopType = $stopType,
             stopDate = $stopDate,
-            stopNumber = $stopNumber,
+            stopNumber = $stopNumber
         WHERE id = $id
     `
     var updateParameters = {
@@ -167,13 +167,13 @@ function getRecordAsRecurrence(record): Recurrence{
         recurrence.enabled = record.enabled
         recurrence.interval = record.interval
         recurrence.intervalNumber = record.intervalNumber
-        recurrence.weekSunday = record.weekdaySunday
-        recurrence.weekMonday = record.weekdayMonday
-        recurrence.weekTuesday = record.weekdayTuesday
-        recurrence.weekWednesday = record.weekdayWednesday
-        recurrence.weekThursday = record.weekdayThursday
-        recurrence.weekFriday = record.weekdayFriday
-        recurrence.weekSaturday = record.weekdaySaturday
+        recurrence.weekSunday = record.weekSunday
+        recurrence.weekMonday = record.weekMonday
+        recurrence.weekTuesday = record.weekTuesday
+        recurrence.weekWednesday = record.weekWednesday
+        recurrence.weekThursday = record.weekThursday
+        recurrence.weekFriday = record.weekFriday
+        recurrence.weekSaturday = record.weekSaturday
         recurrence.monthOrdinal = record.monthOrdinal
         recurrence.monthWeekday = record.monthWeekday
         recurrence.stopType = record.stopType
