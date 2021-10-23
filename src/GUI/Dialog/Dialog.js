@@ -151,21 +151,6 @@ function onIntervalNumberChanged(){
 }
 
 
-
-/******************************************************************************************************************************************
- *************************************************************** Reset Date ***************************************************************
-******************************************************************************************************************************************/
-
-let resetDateFieldset = document.getElementById("resetDateFieldset")
-let resetDateDate = document.getElementById('resetDateDate')
-let resetDateTime = document.getElementById('resetDateTime')
-resetDateDate.addEventListener("change", onResetDateChanged);           // Adds callback for when the date is changed
-resetDateTime.addEventListener("change", onResetDateChanged);           // Adds callback for when the date is changed
-
-function onResetDateChanged(){
-    saveData()
-}
-
 /******************************************************************************************************************************************
  ***************************************************************** Enabled ****************************************************************
 ******************************************************************************************************************************************/
@@ -180,11 +165,9 @@ enabledCheckbox.addEventListener("change", onEnabledChanged);           // Adds 
 function onEnabledChanged(){
     recurrence.enabled = enabledCheckbox.checked                        // Saves the checkbox status to the recurrence object
     if (recurrence.enabled) {                                           // If the recurrence is enabled
-        resetDateFieldset.style.display='block';
         intervalFieldset.style.display='block';                         // Show the interval Fieldset...
         stopFieldset.style.display='block';                             // and the stop Fieldset
     } else {                                                            // Otherwise...
-        resetDateFieldset.style.display='none';
         intervalFieldset.style.display='none';                          // Hide the interval Fieldset
         stopFieldset.style.display='none';                              // And the stop Fieldset
     }
@@ -224,9 +207,6 @@ function loadData(){
     stopTypeDropdown.value = recurrence.stopType
     stopDatePicker.value = recurrence.stopDate
     stopNumberSpinbutton.value = recurrence.stopNumber
-    resetDateDate.value = recurrence.nextResetDate
-    resetDateTime.value = recurrence.nextResetTime
-    onResetDateChanged()
     onEnabledChanged()
     onIntervalChanged()
     onMonthWeekdayChanged()
