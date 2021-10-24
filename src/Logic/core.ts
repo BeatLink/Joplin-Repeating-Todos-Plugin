@@ -26,7 +26,6 @@ export async function main() {
     var oldRecurrence = await getRecord(selectedNote.id)
     var newRecurrence = await openDialog(oldRecurrence)
     if (newRecurrence){
-        console.log(newRecurrence.getNextDate(new Date((await getNote(selectedNote.id)).todo_due)))
         await updateRecord(selectedNote.id, newRecurrence)
     }
 }
@@ -61,7 +60,7 @@ async function noteUpdateHandler(event){
             await createRecord(event.item_id, new Recurrence())
         }
     } else if (event.type == 2) {
-        processTodo(event.item_id)
+        await processTodo(event.item_id)
     } else if (event.type = 3){
         await deleteRecord(event.id)
     }
@@ -77,7 +76,7 @@ async function noteUpdateHandler(event){
 async function processTodo(todoID){
     var todo = await getNote(todoID)
     var recurrence = await getRecord(todoID)
-    if (todo.todo_completed != 0 && todo.todo_due != 0 && recurrence.enabled){
+    if ((todo.todo_completed != 0) && (todo.todo_due != 0) && (recurrence.enabled)){
         var initialDate = new Date(todo.todo_due)
         var nextDate = recurrence.getNextDate(initialDate)
         await setTaskDueDate(todoID, nextDate)
