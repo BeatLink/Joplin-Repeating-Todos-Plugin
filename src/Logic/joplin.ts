@@ -48,12 +48,12 @@ export async function setTaskDueDate(id: string, date){
     var cursor = null
     async function processChanges(){
         do {
-            var response = await joplin.data.get(['events'], { fields: ['item_type', 'item_id', 'type', 'created_time'], cursor: cursor})
+            var response = await joplin.data.get(['events'], { fields: ['id', 'item_id', 'type'], cursor: cursor})
             for (var item of response.items) { 
                 callback(item) 
             }
             cursor = response.cursor
         } while (response.has_more)    
     }
-    setInterval(processChanges, 500)
+    setInterval(await processChanges, 500)
 }
