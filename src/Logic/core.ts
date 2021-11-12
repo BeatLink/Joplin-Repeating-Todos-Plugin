@@ -2,6 +2,7 @@
 import joplin from 'api';
 import { createDialog, openDialog} from '../GUI/Dialog/Dialog';
 import { setupDialogButton } from '../GUI/DialogButton';
+import { setupUpdateMenu } from '../GUI/UpdateMenu';
 import { setupDatabase, createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from '../Logic/database';
 import { getAllNotes, getNote, markTaskUncompleted, setTaskDueDate, connectNoteChangedCallback } from "../Logic/joplin";
 import { Recurrence } from './recurrence';
@@ -12,8 +13,8 @@ import { Recurrence } from './recurrence';
  ***************************************************************************************************************************************************/
 export async function main() {
     await setupDatabase()
-    await updateDatabase()
     await createDialog()
+    await setupUpdateMenu()
     await setupDialogButton()
     await connectNoteChangedCallback(noteUpdateHandler)
 }
@@ -35,7 +36,7 @@ export async function main() {
  * This function synchronizes the recurrence database with joplin notes and todos by Creating a recurrence record in the database for each          *
  * note/todo in joplin if it doesnt exist and deleting recurrence records from the database if it doesnt have a corresponding note in joplin        *
  ***************************************************************************************************************************************************/
-async function updateDatabase(){
+export async function updateDatabase(){
     for (var note of await getAllNotes()){
         if (!await getRecord(note.id)){
             await createRecord(note.id, new Recurrence())
