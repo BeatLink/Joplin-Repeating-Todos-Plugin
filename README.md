@@ -53,7 +53,7 @@ or to stop repeating after a certain number of times,
 
 or after a specific date
 
-![recurrence-stop-date](docs/recurrence-stop-number-date.png)
+![recurrence-stop-date](docs/recurrence-stop-date.png)
 
 7. Once the to-do has been configured to specifications, click OK to save the changes. 
 
