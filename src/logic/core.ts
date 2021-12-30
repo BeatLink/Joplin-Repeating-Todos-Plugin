@@ -24,7 +24,6 @@ export async function main() {
  * Opens the recurrence dialog with recurrence data for the current note and saves the recurrence data to the database on dialog closure            *
  ***************************************************************************************************************************************************/
  export async function openRecurrenceDialog(){
-    await updateDatabase()
     var selectedNote = await joplin.workspace.selectedNote()
     var oldRecurrence = await getRecord(selectedNote.id)
     var newRecurrence = await openDialog(oldRecurrence)
@@ -50,7 +49,6 @@ export async function updateDatabase(){
             await deleteRecord(record.id)
         }
     }
-    joplin.views.dialogs.showMessageBox("Repeating To-Dos - Database Update Complete")
 }
 
 /** noteUpdateHander ********************************************************************************************************************************
