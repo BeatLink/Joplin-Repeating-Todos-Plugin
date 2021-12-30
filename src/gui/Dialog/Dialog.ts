@@ -1,6 +1,6 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from 'api';
-import { Recurrence} from '../../Logic/recurrence';
+import { Recurrence} from '../../logic/recurrence';
 
 
 var dialog = null;
@@ -11,8 +11,8 @@ var dialog = null;
  ***************************************************************************************************************************************************/
 export async function createDialog(){
     dialog = await joplin.views.dialogs.create('Dialog');
-    await joplin.views.dialogs.addScript(dialog, './GUI/Dialog/Dialog.js')
-    await joplin.views.dialogs.addScript(dialog, './GUI/Dialog/Dialog.css')
+    await joplin.views.dialogs.addScript(dialog, './gui/Dialog/Dialog.js')
+    await joplin.views.dialogs.addScript(dialog, './gui/Dialog/Dialog.css')
 }
 
 

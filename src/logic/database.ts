@@ -6,7 +6,7 @@
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { Recurrence } from "../Logic/recurrence";
+import { Recurrence } from "../logic/recurrence";
 const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
 

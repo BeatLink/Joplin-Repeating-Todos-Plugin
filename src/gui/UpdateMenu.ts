@@ -1,7 +1,7 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from 'api';
 import { MenuItemLocation } from 'api/types';
-import { updateDatabase } from '../Logic/core';
+import { updateDatabase } from '../logic/core';
 
 /** setupDialogButton *******************************************************************************************************************************
  * Sets up the button on the toolbar that opens the recurrence dialog                                                                               *

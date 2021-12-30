@@ -1,10 +1,10 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from 'api';
-import { createDialog, openDialog} from '../GUI/Dialog/Dialog';
-import { setupDialogButton } from '../GUI/DialogButton';
-import { setupUpdateMenu } from '../GUI/UpdateMenu';
-import { setupDatabase, createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from '../Logic/database';
-import { getAllNotes, getNote, markTaskUncompleted, setTaskDueDate, connectNoteChangedCallback } from "../Logic/joplin";
+import { createDialog, openDialog} from '../gui/Dialog/Dialog';
+import { setupDialogButton } from '../gui/DialogButton';
+import { setupUpdateMenu } from '../gui/UpdateMenu';
+import { setupDatabase, createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from '../logic/database';
+import { getAllNotes, getNote, markTaskUncompleted, setTaskDueDate, connectNoteChangedCallback } from "../logic/joplin";
 import { Recurrence } from './recurrence';
 
 
@@ -18,15 +18,6 @@ export async function main() {
     await setupUpdateMenu()
     await setupDialogButton()
     await connectNoteChangedCallback(noteUpdateHandler)
-    await setupAlarmTest();
-}
-
-async function setupAlarmTest(){
-    await joplin.workspace.onNoteAlarmTrigger(logTrigger)
-}
-
-async function logTrigger(){
-    console.log("Truggered!")
 }
 
 /** openRecurrenceDialog ****************************************************************************************************************************
@@ -72,7 +63,7 @@ async function noteUpdateHandler(event){
             await createRecord(event.item_id, new Recurrence())
         }
     } else if (event.type == 2) {
-        //await processTodo(event.item_id)
+        await processTodo(event.item_id)
         console.log(event)
     } else if (event.type = 3){
         await deleteRecord(event.id)
@@ -93,7 +84,7 @@ async function processTodo(todoID){
         var initialDate = new Date(todo.todo_due)
         var nextDate = recurrence.getNextDate(initialDate)
         await setTaskDueDate(todoID, nextDate)
-        //await markTaskUncompleted(todoID)
+        await markTaskUncompleted(todoID)
         recurrence.updateStopStatus()
         updateRecord(todoID, recurrence)
     }
