@@ -43,13 +43,14 @@ export async function updateDatabase(){
         if (!await getRecord(note.id)){
             await createRecord(note.id, new Recurrence())
         }
-        processTodo(note.id)
+        await processTodo(note.id)
     }
     for (var record of await getAllRecords()){
         if (!await getNote(record.id)){
             await deleteRecord(record.id)
         }
     }
+    joplin.views.dialogs.showMessageBox("Repeating To-Dos - Database Update Complete")
 }
 
 /** noteUpdateHander ********************************************************************************************************************************
@@ -58,17 +59,15 @@ export async function updateDatabase(){
  * details.                                                                                                                                         *
  ***************************************************************************************************************************************************/
 async function noteUpdateHandler(event){
-    if (event.type == 1){
+    console.log(event)
+    if (event.type == 1 || event.type == 2){
         if (!await getRecord(event.item_id)){
             await createRecord(event.item_id, new Recurrence())
         }
-    } else if (event.type == 2) {
         await processTodo(event.item_id)
-        console.log(event)
-    } else if (event.type = 3){
+    } else if (event.type == 3){
         await deleteRecord(event.id)
-    }
-    
+    }    
 }
 
 
@@ -80,7 +79,7 @@ async function noteUpdateHandler(event){
 async function processTodo(todoID){
     var todo = await getNote(todoID)
     var recurrence = await getRecord(todoID)
-    if ((todo.todo_completed == 0) && (todo.todo_due != 0) && (recurrence.enabled)){
+    if ((todo.todo_completed != 0) && (todo.todo_due != 0) && (recurrence.enabled)){
         var initialDate = new Date(todo.todo_due)
         var nextDate = recurrence.getNextDate(initialDate)
         await setTaskDueDate(todoID, nextDate)
