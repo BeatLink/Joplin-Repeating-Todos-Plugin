@@ -55,5 +55,5 @@ export async function setTaskDueDate(id: string, date){
             cursor = response.cursor
         } while (response.has_more)    
     }
-    setInterval(await processChanges, 30000)
+    setInterval(await processChanges, 60000)
 }
