@@ -2,7 +2,7 @@
 import joplin from 'api';
 import { openDialog } from '../gui/dialog';
 import { createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from './database';
-import { getAllNotes, getNote, markTaskIncomplete, setTaskDueDate, connectNoteChangedCallback } from "./joplin";
+import { getAllNotes, getNote, markTaskIncomplete, setTaskDueDate, markSubTasksIncomplete } from "./joplin";
 import { Recurrence } from '../model/recurrence';
 
 /** openRecurrenceDialog ****************************************************************************************************************************
@@ -65,6 +65,7 @@ async function processTodo(todoID){
         var nextDate = recurrence.getNextDate(initialDate)
         await setTaskDueDate(todoID, nextDate)
         await markTaskIncomplete(todoID)
+        await markSubTasksIncomplete(todoID)
         recurrence.updateStopStatus()
         updateRecord(todoID, recurrence)
     }

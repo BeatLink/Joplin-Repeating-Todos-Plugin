@@ -35,13 +35,19 @@ export async function markTaskIncomplete(id){
 }
 
 /** markSubtasksIncomplete *****************************************************************************************************************************
- * Marks the task as incomplete                                                                                                                     *
+ * Marks to-do lists within the note as incomplete                                                                                                                     *
  ***************************************************************************************************************************************************/
  export async function markSubTasksIncomplete(id){
-    var note_data = await joplin.data.get(['notes', id], null); //{ todo_completed: 0}
-    console.log(note_data)
-}
+    var note = await joplin.data.get(['notes', id], { fields: ['id','body']});
+    await joplin.data.put(['notes', id], null, { body: note.body.replace(/\-\ \[x\]/g, "- [ ]")});
+    if ((await joplin.workspace.selectedNote()).id == id){
+        /*
+            TODO: This codeblock should refresh the currently opened note if it changes, however, joplin currently has no means to do this. 
+            A bug report has been filed. See https://github.com/laurent22/joplin/issues/5955
+        */
+    }
 
+}
 
 /** setTaskDueDate **********************************************************************************************************************************
  * Sets the due date for the task with the given ID                                                                                                 *
