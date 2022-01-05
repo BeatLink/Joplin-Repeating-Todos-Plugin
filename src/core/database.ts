@@ -157,19 +157,13 @@ function getRecordAsRecurrence(record): Recurrence{
  * Sqlite3 does not support async/await functionality, thus the need for this promise based function to run the sqlite functions. If there are      *
  * better ways to do this, please let me know                                                                                                       *
  ***************************************************************************************************************************************************/
- async function runQuery(func, query, parameters): Promise<any>{
-    var functionsMap = {
-        'run': database.run,
-        'get': database.get,
-        'all': database.all,
-    }
-    function promiseFunc(resolve, reject) {
-        async function callback(error, result){ 
-            error ? reject(error) : resolve(result)
+ async function runQuery(func, SQLQuery, parameters): Promise<any>{
+    return await new Promise(
+        (resolve, reject) => {
+            database[func](SQLQuery, parameters, (err, row) => { err ? reject(err) : resolve(row) })
         }
-        functionsMap[func](query, parameters, callback)
-    }
-    return await new Promise(promiseFunc)
+    )
 }
+
 
     
