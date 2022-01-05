@@ -1,13 +1,12 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
 
-
 /** getAllNotes *************************************************************************************************************************************
  * Gets all the notes from joplin                                                                                                                   *
  ***************************************************************************************************************************************************/
 export async function getAllNotes(){
     var allNotes = []
-    let pageNum = 0
+    var pageNum = 0
 	do {
 		var response = await joplin.data.get(['notes'], { fields: ['id', "todo_due", "todo_completed"], page: pageNum++})
         allNotes = allNotes.concat(response.items)
@@ -27,10 +26,11 @@ export async function getNote(noteID){
         }
     }
 }
-/** markTaskUncompleted *****************************************************************************************************************************
+
+/** markTaskIncomplete *****************************************************************************************************************************
  * Marks the task as incomplete                                                                                                                     *
  ***************************************************************************************************************************************************/
-export async function markTaskUncompleted(id){
+export async function markTaskIncomplete(id){
     await joplin.data.put(['notes', id], null, { todo_completed: 0});
 }
 
@@ -55,5 +55,5 @@ export async function setTaskDueDate(id: string, date){
             cursor = response.cursor
         } while (response.has_more)    
     }
-    setInterval(await processChanges, 10000)
+    setInterval(await processChanges, 30000)
 }

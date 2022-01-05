@@ -6,25 +6,25 @@
 
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { Recurrence } from "../logic/recurrence";
+import { Recurrence } from "../model/recurrence";
 const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
 
 /** Variable setup *********************************************************************************************************************************/
-
+var pluginDir = null
+var databasePath = null
 var database = null
 
 /** setupDatabase ***********************************************************************************************************************************
  * Runs the code required for database initialization and record updates. This should run at  program start.                                        *
  ***************************************************************************************************************************************************/
 export async function setupDatabase(){
-    var pluginDir = await joplin.plugins.dataDir()
-    var databasePath = pluginDir + "/database.sqlite3"
+    pluginDir = await joplin.plugins.dataDir()
+    databasePath = pluginDir + "/database.sqlite3"
     await fs.ensureDir(pluginDir)
     database = new sqlite3.Database(databasePath)
     await createTable()
 }
-
 
 /** createTable *************************************************************************************************************************************
  * Creates the database table if it doesnt exist                                                                                                    *
@@ -53,7 +53,6 @@ async function createTable(){
     runQuery('run', createQuery, {})
 }
 
-
 /** createRecord ************************************************************************************************************************************
  * Creates a new recurrence record in the recurrence database when given the noteID and recurrence data object.                                     *
  ***************************************************************************************************************************************************/
@@ -62,16 +61,13 @@ export async function createRecord(id: string, recurrence:Recurrence){
     await updateRecord(id, recurrence);
 }
 
-
 /** getAllRecords ***********************************************************************************************************************************
  * Gets all records from the database                                                                                                               *
  ***************************************************************************************************************************************************/
 export async function getAllRecords(){
     var records = await runQuery('all', `SELECT * FROM Recurrence`, {})
-    var recurrences = records.map((record) => ({id: record.id, recurrence: getRecordAsRecurrence(record)}))
-    return recurrences
+    return records.map((record) => ({id: record.id, recurrence: getRecordAsRecurrence(record)}))
 }
-
 
 /** getRecord ***************************************************************************************************************************************
  * Gets recurrence record from the database for the corresponding note ID                                                                           *
@@ -80,7 +76,6 @@ export async function getRecord(id): Promise<Recurrence>{
     var record = await runQuery('get', `SELECT * FROM Recurrence WHERE id = $id`, {$id: id})
     return getRecordAsRecurrence(record)
 }
-
 
 /** UpdateRecord ************************************************************************************************************************************
  * This is a helper function that updates a recurrence record in the database when given the noteID and recurrence data object                      *
@@ -127,36 +122,12 @@ export async function updateRecord(id: string, recurrence:Recurrence){
     await runQuery('run', updateQuery, updateParameters)
 }
 
-
 /** deleteRecord ************************************************************************************************************************************
  * This is a helper function that deletes a recurrence record from the database for the corresponding note ID.                                      *
  ***************************************************************************************************************************************************/
 export async function deleteRecord(id){
     await runQuery('run', `DELETE FROM Recurrence WHERE id = $id`, {$id: id})
 }
-
-
-/** runQuery ****************************************************************************************************************************************
- * Sqlite3 does not support async/await functionality, thus the need for this promise based function to ruin the sqlite functions. If there are     *
- * better ways to do this, please let me know                                                                                                       *
- ***************************************************************************************************************************************************/
-async function runQuery(func, SQLQuery, parameters): Promise<any>{
-    return await new Promise(
-        (resolve, reject) => {
-            const callback = (err, row) => {
-                err ? reject(err) : resolve(row)
-            }
-            if (func == 'run'){
-                database.run (SQLQuery,parameters, callback)
-            } else if (func == 'get'){
-                database.get(SQLQuery, parameters, callback)
-            } else if (func = 'all'){
-                database.all(SQLQuery, parameters, callback)
-            }
-        }
-    )
-}
-
 
 /** convertTecordToRecurrence ***********************************************************************************************************************
  * Converts a database record from an sqlite3 output to a recurrence object                                                                         *
@@ -182,3 +153,24 @@ function getRecordAsRecurrence(record): Recurrence{
         return recurrence
     }
 }
+
+/** runQuery ****************************************************************************************************************************************
+ * Sqlite3 does not support async/await functionality, thus the need for this promise based function to run the sqlite functions. If there are      *
+ * better ways to do this, please let me know                                                                                                       *
+ ***************************************************************************************************************************************************/
+ async function runQuery(func, query, parameters): Promise<any>{
+    var functionsMap = {
+        'run': database.run,
+        'get': database.get,
+        'all': database.all,
+    }
+    function promiseFunc(resolve, reject) {
+        function callback(error, result){ 
+            error ? reject(error) : resolve(result)
+        }
+        functionsMap[func](query, parameters, callback)
+    }
+    return await new Promise(promiseFunc)
+}
+
+    

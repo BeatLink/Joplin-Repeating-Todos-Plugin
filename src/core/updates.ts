@@ -1,24 +1,9 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from 'api';
-import { createDialog, openDialog} from '../gui/Dialog/Dialog';
-import { setupDialogButton } from '../gui/DialogButton';
-import { setupUpdateMenu } from '../gui/UpdateMenu';
-import { setupDatabase, createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from '../logic/database';
-import { getAllNotes, getNote, markTaskUncompleted, setTaskDueDate, connectNoteChangedCallback } from "../logic/joplin";
-import { Recurrence } from './recurrence';
-
-
-/** Main ********************************************************************************************************************************************
- * Calls all the functions needed to initialize the plugin                                                                                          *
- ***************************************************************************************************************************************************/
-export async function main() {
-    await setupDatabase()
-    await updateDatabase()
-    await createDialog()
-    await setupUpdateMenu()
-    await setupDialogButton()
-    await connectNoteChangedCallback(noteUpdateHandler)
-}
+import { openDialog } from '../gui/dialog';
+import { createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from './database';
+import { getAllNotes, getNote, markTaskIncomplete, setTaskDueDate, connectNoteChangedCallback } from "./joplin";
+import { Recurrence } from '../model/recurrence';
 
 /** openRecurrenceDialog ****************************************************************************************************************************
  * Opens the recurrence dialog with recurrence data for the current note and saves the recurrence data to the database on dialog closure            *
@@ -37,7 +22,7 @@ export async function main() {
  * This function synchronizes the recurrence database with joplin notes and todos by Creating a recurrence record in the database for each          *
  * note/todo in joplin if it doesnt exist and deleting recurrence records from the database if it doesnt have a corresponding note in joplin        *
  ***************************************************************************************************************************************************/
-export async function updateDatabase(){
+export async function updateAllRecurrences(){
     for (var note of await getAllNotes()){
         if (!await getRecord(note.id)){
             await createRecord(note.id, new Recurrence())
@@ -56,7 +41,7 @@ export async function updateDatabase(){
  * If a note is created, its corresponding record is created in the database. If a note is updated, then the todo is processed. See processTodo for *
  * details.                                                                                                                                         *
  ***************************************************************************************************************************************************/
-async function noteUpdateHandler(event){
+export async function noteUpdateHandler(event){
     console.log(event)
     if (event.type == 1 || event.type == 2){
         if (!await getRecord(event.item_id)){
@@ -81,7 +66,7 @@ async function processTodo(todoID){
         var initialDate = new Date(todo.todo_due)
         var nextDate = recurrence.getNextDate(initialDate)
         await setTaskDueDate(todoID, nextDate)
-        await markTaskUncompleted(todoID)
+        await markTaskIncomplete(todoID)
         recurrence.updateStopStatus()
         updateRecord(todoID, recurrence)
     }
