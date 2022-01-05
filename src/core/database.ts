@@ -11,7 +11,6 @@ const fs = joplin.require('fs-extra')
 const sqlite3 = joplin.require('sqlite3')
 
 /** Variable setup *********************************************************************************************************************************/
-var pluginDir = null
 var databasePath = null
 var database = null
 
@@ -19,7 +18,7 @@ var database = null
  * Runs the code required for database initialization and record updates. This should run at  program start.                                        *
  ***************************************************************************************************************************************************/
 export async function setupDatabase(){
-    pluginDir = await joplin.plugins.dataDir()
+    var pluginDir = await joplin.plugins.dataDir()
     databasePath = pluginDir + "/database.sqlite3"
     await fs.ensureDir(pluginDir)
     database = new sqlite3.Database(databasePath)
@@ -165,7 +164,7 @@ function getRecordAsRecurrence(record): Recurrence{
         'all': database.all,
     }
     function promiseFunc(resolve, reject) {
-        function callback(error, result){ 
+        async function callback(error, result){ 
             error ? reject(error) : resolve(result)
         }
         functionsMap[func](query, parameters, callback)

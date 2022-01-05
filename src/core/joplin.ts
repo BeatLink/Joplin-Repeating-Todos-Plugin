@@ -34,6 +34,15 @@ export async function markTaskIncomplete(id){
     await joplin.data.put(['notes', id], null, { todo_completed: 0});
 }
 
+/** markSubtasksIncomplete *****************************************************************************************************************************
+ * Marks the task as incomplete                                                                                                                     *
+ ***************************************************************************************************************************************************/
+ export async function markSubTasksIncomplete(id){
+    var note_data = await joplin.data.get(['notes', id], null); //{ todo_completed: 0}
+    console.log(note_data)
+}
+
+
 /** setTaskDueDate **********************************************************************************************************************************
  * Sets the due date for the task with the given ID                                                                                                 *
  ***************************************************************************************************************************************************/

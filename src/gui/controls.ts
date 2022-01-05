@@ -15,7 +15,7 @@ async function setupCommands(){
         execute: updateAllRecurrences
     })
     await joplin.commands.register({
-        name: 'openDialog',
+        name: 'openRecurrenceDialog',
         label: 'Open Recurrence Dialog',
         iconName: 'fas fa-redo-alt',
         execute: openRecurrenceDialog
@@ -38,9 +38,10 @@ async function setupMenu(){
  * Sets up buttons on the toolbar for the plugin                                                                                                    *
  ***************************************************************************************************************************************************/
 async function setupToolbar(){
+    console.log("setting up toolbar")
     await joplin.views.toolbarButtons.create(
-        'openDialogButton',
-        'openDialog',
+        'openRecurrenceDialogButton',
+        'openRecurrenceDialog',
         ToolbarButtonLocation.NoteToolbar
     );
 }
