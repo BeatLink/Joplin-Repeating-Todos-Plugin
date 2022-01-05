@@ -1,11 +1,10 @@
 /* Imports *****************************************************************************************************************************************/
 import joplin from 'api';
-import { noteUpdateHandler, updateAllRecurrences } from './core/updates';
+import { noteUpdateHandler, updateAllRecurrences } from './core/recurrence';
 import { setupDatabase } from './core/database';
 import { connectNoteChangedCallback } from './core/joplin';
 import { setupDialog } from './gui/dialog';
 import { setupControls } from './gui/controls';
-
 
 /** Plugin Registration *****************************************************************************************************************************
  * Registers the plugin with joplin.                                                                                                                *
@@ -23,4 +22,5 @@ async function main() {
     await setupControls()
     await updateAllRecurrences()
     await connectNoteChangedCallback(noteUpdateHandler)
+    await joplin.workspace.onNoteChange(noteUpdateHandler)
 }

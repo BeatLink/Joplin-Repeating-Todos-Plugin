@@ -2,7 +2,7 @@
 import joplin from 'api';
 import { MenuItemLocation } from 'api/types';
 import { ToolbarButtonLocation } from 'api/types';
-import { openRecurrenceDialog, updateAllRecurrences } from '../core/updates';
+import { openRecurrenceDialog, updateAllRecurrences } from '../core/recurrence';
 
 /** setupCommands ***********************************************************************************************************************************
  * Sets up all commands used by toolbar buttons and menu items                                                                                      *

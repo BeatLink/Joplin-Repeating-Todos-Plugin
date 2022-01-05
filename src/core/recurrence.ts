@@ -17,7 +17,6 @@ import { Recurrence } from '../model/recurrence';
     }
 }
 
-
 /** updateDatabase **********************************************************************************************************************************
  * This function synchronizes the recurrence database with joplin notes and todos by Creating a recurrence record in the database for each          *
  * note/todo in joplin if it doesnt exist and deleting recurrence records from the database if it doesnt have a corresponding note in joplin        *
@@ -41,8 +40,7 @@ export async function updateAllRecurrences(){
  * If a note is created, its corresponding record is created in the database. If a note is updated, then the todo is processed. See processTodo for *
  * details.                                                                                                                                         *
  ***************************************************************************************************************************************************/
-export async function noteUpdateHandler(event){
-    console.log(event)
+export async function noteUpdateHandler(event?){
     if (event.type == 1 || event.type == 2){
         if (!await getRecord(event.item_id)){
             await createRecord(event.item_id, new Recurrence())
