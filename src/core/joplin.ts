@@ -55,20 +55,3 @@ export async function markTaskIncomplete(id){
 export async function setTaskDueDate(id: string, date){
     await joplin.data.put(['notes', id], null, { todo_due: date.getTime()});
 }
-
-/** connectNoteChangedCallback **********************************************************************************************************************
- * Creates a polling function that runs a callback whenever a note changes                                                                          *
- ***************************************************************************************************************************************************/
- export async function connectNoteChangedCallback(callback){
-    var cursor = null
-    async function processChanges(){
-        do {
-            var response = await joplin.data.get(['events'], { fields: ['id', 'item_id', 'type'], cursor: cursor})
-            for (var item of response.items) { 
-                callback(item) 
-            }
-            cursor = response.cursor
-        } while (response.has_more)    
-    }
-    setInterval(await processChanges, 60000)
-}

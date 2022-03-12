@@ -35,23 +35,6 @@ export async function updateAllRecurrences(){
     }
 }
 
-/** noteUpdateHander ********************************************************************************************************************************
- * This function is called whenever a note changes. If a note is deleted, the corresponding recurrence record is deleted from the database.         *
- * If a note is created, its corresponding record is created in the database. If a note is updated, then the todo is processed. See processTodo for *
- * details.                                                                                                                                         *
- ***************************************************************************************************************************************************/
-export async function noteUpdateHandler(event?){
-    if (event.type == 1 || event.type == 2){
-        if (!await getRecord(event.item_id)){
-            await createRecord(event.item_id, new Recurrence())
-        }
-        await processTodo(event.item_id)
-    } else if (event.type == 3){
-        await deleteRecord(event.id)
-    }    
-}
-
-
 /** processTodo *************************************************************************************************************************************
  * If the given todo has been completed and has a due date and recurrence is enable, the todo due date will be updated to the next due date and the *
  * task flagged as incomplete. The recurrence stop criteria is also processed, deactivating recurrence if the stop date is passed or the stop number*
