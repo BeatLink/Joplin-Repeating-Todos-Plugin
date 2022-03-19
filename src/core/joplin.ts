@@ -27,12 +27,20 @@ export async function getNote(noteID){
     }
 }
 
+/** markTaskComplete *****************************************************************************************************************************
+ * Marks the task as incomplete                                                                                                                     *
+ ***************************************************************************************************************************************************/
+export async function markTaskComplete(id){
+    await joplin.data.put(['notes', id], null, { todo_completed: Date.now()});
+}
+
 /** markTaskIncomplete *****************************************************************************************************************************
  * Marks the task as incomplete                                                                                                                     *
  ***************************************************************************************************************************************************/
-export async function markTaskIncomplete(id){
+ export async function markTaskIncomplete(id){
     await joplin.data.put(['notes', id], null, { todo_completed: 0});
 }
+
 
 /** markSubtasksIncomplete *****************************************************************************************************************************
  * Marks to-do lists within the note as incomplete                                                                                                                     *

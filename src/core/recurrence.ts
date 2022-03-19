@@ -1,9 +1,11 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from 'api';
-import { openDialog } from '../gui/dialog';
+import { openDialog } from '../gui/dialog/dialog';
 import { createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from './database';
-import { getAllNotes, getNote, markTaskIncomplete, setTaskDueDate, markSubTasksIncomplete } from "./joplin";
+import { getAllNotes, getNote, markTaskIncomplete, setTaskDueDate, markSubTasksIncomplete, markTaskComplete } from "./joplin";
 import { Recurrence } from '../model/recurrence';
+import { start } from 'repl';
+import { sleep } from './misc';
 
 /** openRecurrenceDialog ****************************************************************************************************************************
  * Opens the recurrence dialog with recurrence data for the current note and saves the recurrence data to the database on dialog closure            *
@@ -22,17 +24,39 @@ import { Recurrence } from '../model/recurrence';
  * note/todo in joplin if it doesnt exist and deleting recurrence records from the database if it doesnt have a corresponding note in joplin        *
  ***************************************************************************************************************************************************/
 export async function updateAllRecurrences(){
-    for (var note of await getAllNotes()){
-        if (!await getRecord(note.id)){
+    var allNotes = await getAllNotes()
+    var allRecurrences = await getAllRecords()
+    for (var note of allNotes){
+        if (!allRecurrences.some(record => record.id == note.id)){
             await createRecord(note.id, new Recurrence())
         }
         await processTodo(note.id)
     }
-    for (var record of await getAllRecords()){
-        if (!await getNote(record.id)){
+    for (var record of allRecurrences){
+        if (!allNotes.some(note => note.id == record.id)){
             await deleteRecord(record.id)
         }
     }
+}
+
+export async function updateOverdueTodos(){
+    var startOfToday = new Date();
+    startOfToday.setHours(0,0,0,0);
+    for (var note of await getAllNotes()){
+        while (true){
+            var todo = await getNote(note.id)
+            var initialDate = new Date(todo.todo_due)
+            var recurrence = await getRecord(todo.id)
+            if ((todo.todo_due == 0) || (!recurrence.enabled) || initialDate > startOfToday){
+                break;
+            } else {
+                await markTaskComplete(note.id)
+                await processTodo(note.id)
+                sleep(1000)    
+            }
+        }
+    }
+    joplin.views.dialogs.showMessageBox("Overdue Tasks Rescheduled")
 }
 
 /** processTodo *************************************************************************************************************************************

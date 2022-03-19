@@ -1,6 +1,6 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from 'api';
-import { Recurrence, recurrenceFromJSON, recurrenceToJSON } from '../model/recurrence';
+import { recurrenceFromJSON, recurrenceToJSON } from '../../model/recurrence';
 const fs = joplin.require('fs-extra');
 
 var dialog = null;
