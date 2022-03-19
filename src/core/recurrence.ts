@@ -30,7 +30,7 @@ export async function updateAllRecurrences(){
         if (!allRecurrences.some(record => record.id == note.id)){
             await createRecord(note.id, new Recurrence())
         }
-        await processTodo(note.id)
+        await processTodo(note)
     }
     for (var record of allRecurrences){
         if (!allNotes.some(note => note.id == record.id)){
@@ -64,16 +64,15 @@ export async function updateOverdueTodos(){
  * task flagged as incomplete. The recurrence stop criteria is also processed, deactivating recurrence if the stop date is passed or the stop number*
  * falls below 1.                                                                                                                                   *
  ***************************************************************************************************************************************************/
-async function processTodo(todoID){
-    var todo = await getNote(todoID)
-    var recurrence = await getRecord(todoID)
+async function processTodo(todo){
+    var recurrence = await getRecord(todo.id)
     if ((todo.todo_completed != 0) && (todo.todo_due != 0) && (recurrence.enabled)){
         var initialDate = new Date(todo.todo_due)
         var nextDate = recurrence.getNextDate(initialDate)
-        await setTaskDueDate(todoID, nextDate)
-        await markTaskIncomplete(todoID)
-        await markSubTasksIncomplete(todoID)
+        await setTaskDueDate(todo.id, nextDate)
+        await markTaskIncomplete(todo.id)
+        await markSubTasksIncomplete(todo.id)
         recurrence.updateStopStatus()
-        updateRecord(todoID, recurrence)
+        updateRecord(todo.id, recurrence)
     }
 }
