@@ -128,7 +128,7 @@ export async function deleteRecord(id){
     await runQuery('run', `DELETE FROM Recurrence WHERE id = $id`, {$id: id})
 }
 
-/** convertTecordToRecurrence ***********************************************************************************************************************
+/** convertRecordToRecurrence ***********************************************************************************************************************
  * Converts a database record from an sqlite3 output to a recurrence object                                                                         *
  ***************************************************************************************************************************************************/
 function getRecordAsRecurrence(record): Recurrence{
