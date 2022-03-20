@@ -154,6 +154,17 @@ export class Recurrence {
         }
     }
 
+    public getNextDateAfter(initial, after){
+        if (this.enabled){
+            var newDate = initial
+            console.log(`initial ${initial} after ${after}`)
+            while (newDate < after) {
+                newDate = this.getNextDate(newDate)
+                console.log(`newDate ${newDate}`)
+            }    
+        }
+    }
+
     /** updateStopStatus ****************************************************************************************************************************
      * Stops task from repeating if necessary or updates the stop repeating resources.                                                              *
      * If the stop type is date and the stop date has passed, disable recurrence.                                                                   *

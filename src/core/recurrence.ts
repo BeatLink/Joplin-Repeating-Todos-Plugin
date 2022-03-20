@@ -4,8 +4,8 @@ import { openDialog } from '../gui/dialog/dialog';
 import { createRecord, getAllRecords, getRecord, updateRecord, deleteRecord} from './database';
 import { getAllNotes, getNote, markTaskIncomplete, setTaskDueDate, markSubTasksIncomplete, markTaskComplete } from "./joplin";
 import { Recurrence } from '../model/recurrence';
-import { start } from 'repl';
 import { sleep } from './misc';
+import { start } from 'repl';
 
 /** openRecurrenceDialog ****************************************************************************************************************************
  * Opens the recurrence dialog with recurrence data for the current note and saves the recurrence data to the database on dialog closure            *
@@ -43,17 +43,11 @@ export async function updateOverdueTodos(){
     var startOfToday = new Date();
     startOfToday.setHours(0,0,0,0);
     for (var note of await getAllNotes()){
-        while (true){
-            var todo = await getNote(note.id)
-            var initialDate = new Date(todo.todo_due)
-            var recurrence = await getRecord(todo.id)
-            if ((todo.todo_due == 0) || (!recurrence.enabled) || initialDate > startOfToday){
-                break;
-            } else {
-                await markTaskComplete(note.id)
-                await processTodo(note.id)
-                sleep(1000)    
-            }
+        var recurrence = await getRecord(note.id)
+        if ((note.todo_due != 0) && (recurrence != null) && (recurrence.enabled) && (new Date(note.todo_due) < startOfToday)){
+            await markTaskComplete(note.id)
+            await processTodo(note, startOfToday)
+            await sleep(1000)    
         }
     }
     joplin.views.dialogs.showMessageBox("Overdue Tasks Rescheduled")
@@ -64,11 +58,11 @@ export async function updateOverdueTodos(){
  * task flagged as incomplete. The recurrence stop criteria is also processed, deactivating recurrence if the stop date is passed or the stop number*
  * falls below 1.                                                                                                                                   *
  ***************************************************************************************************************************************************/
-async function processTodo(todo){
+async function processTodo(todo, after=null){
     var recurrence = await getRecord(todo.id)
     if ((todo.todo_completed != 0) && (todo.todo_due != 0) && (recurrence.enabled)){
         var initialDate = new Date(todo.todo_due)
-        var nextDate = recurrence.getNextDate(initialDate)
+        var nextDate = after == null ? recurrence.getNextDate(initialDate) : recurrence.getNextDateAfter(initialDate, after)
         await setTaskDueDate(todo.id, nextDate)
         await markTaskIncomplete(todo.id)
         await markSubTasksIncomplete(todo.id)
