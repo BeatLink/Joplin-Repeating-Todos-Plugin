@@ -7,6 +7,10 @@ import { Recurrence } from '../model/recurrence';
 import { sleep } from './misc';
 import { start } from 'repl';
 
+
+var updating = false;
+
+
 /** openRecurrenceDialog ****************************************************************************************************************************
  * Opens the recurrence dialog with recurrence data for the current note and saves the recurrence data to the database on dialog closure            *
  ***************************************************************************************************************************************************/
@@ -24,6 +28,8 @@ import { start } from 'repl';
  * note/todo in joplin if it doesnt exist and deleting recurrence records from the database if it doesnt have a corresponding note in joplin        *
  ***************************************************************************************************************************************************/
 export async function updateAllRecurrences(){
+    if (updating) return;
+    updating = true;
     var allNotes = await getAllNotes()
     var allRecurrences = await getAllRecords()
     for (var note of allNotes){
@@ -37,6 +43,7 @@ export async function updateAllRecurrences(){
             await deleteRecord(record.id)
         }
     }
+    updating = false;
 }
 
 export async function updateOverdueTodos(){
