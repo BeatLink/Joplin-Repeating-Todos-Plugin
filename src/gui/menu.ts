@@ -11,7 +11,8 @@ export async function setupMenu(){
         "Repeating Todos", 
         [
             {commandName: 'updateAllRecurrences'},
-            {commandName: 'updateOverdueTodos'}
+            {commandName: 'updateOverdueTodos'},
+            {commandName: 'setOverdueTodosToToday'}
         ],
         MenuItemLocation.Tools
     )

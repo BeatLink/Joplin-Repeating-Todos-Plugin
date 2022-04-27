@@ -1,6 +1,6 @@
 /** Imports ****************************************************************************************************************************************/
 import joplin from "api";
-import { openRecurrenceDialog, updateAllRecurrences, updateOverdueTodos } from "./recurrence";
+import { openRecurrenceDialog, setOverdueTodosToToday, updateAllRecurrences, updateOverdueTodos } from "./recurrence";
 
 /** setupCommands ***********************************************************************************************************************************
  * Sets up all commands used by toolbar buttons and menu items                                                                                      *
@@ -18,6 +18,13 @@ export async function setupCommands(){
         iconName: 'fas fa-redo-alt',
         execute: updateOverdueTodos
     })
+    await joplin.commands.register({
+        name: 'setOverdueTodosToToday',
+        label: 'Reschedule Overdue To-Dos to Today',
+        iconName: 'fas fa-redo-alt',
+        execute: setOverdueTodosToToday
+    })
+
     await joplin.commands.register({
         name: 'openRecurrenceDialog',
         label: 'Open Recurrence Dialog',

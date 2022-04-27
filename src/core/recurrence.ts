@@ -46,6 +46,23 @@ export async function updateAllRecurrences(){
     updating = false;
 }
 
+
+export async function setOverdueTodosToToday(){
+    var startOfToday = new Date();
+    startOfToday.setHours(0,0,0,0);
+    for (var note of await getAllNotes()){
+        var recurrence = await getRecord(note.id)
+        var dueDate = new Date(note.todo_due)
+        if ((note.todo_due != 0) && (recurrence != null) && (recurrence.enabled) && (dueDate < startOfToday)){
+            var newDueDate = startOfToday
+            newDueDate.setHours(dueDate.getHours(), dueDate.getMinutes(), dueDate.getSeconds(), dueDate.getMilliseconds())
+            await setTaskDueDate(note.id, newDueDate)
+            await sleep(1000)
+        }
+    }
+    joplin.views.dialogs.showMessageBox("Overdue Tasks Rescheduled")
+}
+
 export async function updateOverdueTodos(){
     var startOfToday = new Date();
     startOfToday.setHours(0,0,0,0);
