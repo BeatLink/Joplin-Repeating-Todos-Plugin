@@ -161,7 +161,8 @@ export class Recurrence {
             while (newDate < after) {
                 newDate = this.getNextDate(newDate)
                 console.log(`newDate ${newDate}`)
-            }    
+            }
+            return newDate;
         }
     }
 
@@ -209,7 +210,7 @@ export class Recurrence {
         if (this.weekSaturday == true) {weekArray.push(6)}              // If saturday enabled add 6 to array
         return weekArray                                                // Return the array
 
-    } 
+    }
 
     /* getMonthWeekday ********************************************************************************************************************
         Gets the nth weekday of the month of the given date according to the monthOrdinal and monthWeekday variables
@@ -217,7 +218,7 @@ export class Recurrence {
         Next it then gets the nth weekday of the list, determined by the monthOrdinal, eg. the second thursday of the month
     */
     private getMonthWeekday(date: Date){
-        var ordinal = this.monthOrdinalStrings.indexOf(this.monthOrdinal)      // Get the month ordinal as integer    
+        var ordinal = this.monthOrdinalStrings.indexOf(this.monthOrdinal)      // Get the month ordinal as integer
         var weekday = this.weekdayStrings.indexOf(this.monthWeekday)      // Get the month weekday as integer
         var weekdays = [];                                              // Create array for matching weekdays
         var startDate = new Date(date)                                  // Create a new date for manipulation
